@@ -1,0 +1,63 @@
+{
+    "name": "besynes",
+    "version": "0.1.0",
+    "description": "Ferret Desktop Manager that lets you write and test FQL scripts",
+    "main": "dist/index.js",
+    "scripts": {
+        "start": "cross-env ELECTRON_IS_DEV=1 electron dist/main.js",
+        "clean": "rimraf dist/",
+        "build": "npm run clean && tsc -b ./tsconfig.json && cpy '**/*.html' '../dist/' --cwd=src --parents",
+        "fmt": "pretty-quick"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MontFerret/besynes.git"
+    },
+    "keywords": [
+        "ferret",
+        "fql",
+        "desktop",
+        "manager"
+    ],
+    "author": "MontFerret Team",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/MontFerret/besynes/issues"
+    },
+    "homepage": "https://github.com/MontFerret/besynes#readme",
+    "devDependencies": {
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.6.8",
+        "@types/react": "^16.8.23",
+        "@types/react-dom": "^16.8.5",
+        "@types/react-router": "^5.0.3",
+        "@types/react-router-dom": "^4.3.4",
+        "@types/sinon": "^7.0.13",
+        "chai": "^4.2.0",
+        "cpy-cli": "^2.0.0",
+        "cross-env": "^5.2.0",
+        "electron": "^5.0.8",
+        "husky": "^3.0.1",
+        "mocha": "^6.2.0",
+        "prettier": "^1.18.2",
+        "pretty-quick": "^1.11.1",
+        "rimraf": "^2.6.3",
+        "sinon": "^7.3.2",
+        "source-map-support": "^0.5.12",
+        "ts-node": "^8.3.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.5.3"
+    },
+    "dependencies": {
+        "@material-ui/core": "^4.3.0",
+        "electron-is-dev": "^1.1.0",
+        "history": "^4.9.0",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-router": "^5.0.1",
+        "react-router-dom": "^5.0.1",
+        "tslint": "^5.18.0"
+    }
+}
