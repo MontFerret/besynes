@@ -29,7 +29,7 @@ export default class Application {
 
         // and load the index.html of the app.
         Application.__mainWindow.loadFile(
-            path.join(__dirname, 'ui/index.html'),
+            path.join(__dirname, '../renderer/index.html'),
         );
         Application.__mainWindow.on('close', Application.__onWindowClose);
 
