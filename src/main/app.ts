@@ -20,8 +20,8 @@ export default class Application {
 
         // Create the browser window.
         Application.__mainWindow = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: 1024,
+            height: 768,
             webPreferences: {
                 nodeIntegration: true,
             },

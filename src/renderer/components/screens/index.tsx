@@ -1,26 +1,34 @@
 import { Layout } from 'antd';
 import React from 'react';
-import SplitPane from 'react-split-pane';
 import { AppContent } from './content/index';
 import { AppHeader } from './header/index';
 import { AppSidebar } from './sidebar/index';
 
 const { Header, Content, Sider } = Layout;
 
+const styles = {
+    layout: {
+        height: '100%',
+    },
+    sider: {
+        height: '100%',
+        background: '#fff',
+        minWidth: '250px',
+        maxWidth: '400px',
+    },
+};
+
 export class IndexScreen extends React.PureComponent {
     public render(): any {
         return (
-            <Layout>
+            <Layout style={styles.layout}>
                 <Header className="header">
                     <AppHeader />
                 </Header>
-
-                <SplitPane split="vertical" minSize={50} defaultSize={200}>
-                    <Layout>
-                        <Sider width={200} style={{ background: '#fff' }}>
-                            <AppSidebar />
-                        </Sider>
-                    </Layout>
+                <Layout>
+                    <Sider width={250} style={styles.sider}>
+                        <AppSidebar />
+                    </Sider>
                     <Layout style={{ padding: '0 24px 24px' }}>
                         <Content
                             style={{
@@ -33,7 +41,7 @@ export class IndexScreen extends React.PureComponent {
                             <AppContent />
                         </Content>
                     </Layout>
-                </SplitPane>
+                </Layout>
             </Layout>
         );
     }

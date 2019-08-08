@@ -6,7 +6,7 @@ export class AppContent extends React.PureComponent {
     public render(): any {
         return (
             <Row>
-                <Col>
+                <Col span={24}>
                     <CodeTabs />
                 </Col>
             </Row>

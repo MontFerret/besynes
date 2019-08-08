@@ -33,7 +33,6 @@
         },
         "renderer": {
             "sourceDirectory": "src/renderer",
-            "template": "src/renderer/index.html",
             "webpackConfig": "./webpack.renderer.additions.js"
         }
     },
@@ -41,6 +40,7 @@
         "antd": "^3.21.2",
         "codemirror": "^5.48.2",
         "electron-is-dev": "^1.1.0",
+        "nanoid": "^2.0.3",
         "parcel-bundler": "^1.12.3",
         "react": "^16.8.6",
         "react-codemirror2": "^6.0.0",
@@ -50,6 +50,7 @@
     "devDependencies": {
         "@types/chai": "^4.1.7",
         "@types/mocha": "^5.2.7",
+        "@types/nanoid": "^2.0.0",
         "@types/node": "^12.6.8",
         "@types/react": "^16.8.23",
         "@types/react-dom": "^16.8.5",
