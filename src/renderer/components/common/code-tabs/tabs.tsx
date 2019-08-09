@@ -1,8 +1,11 @@
 import { Icon, Tabs } from 'antd';
+import { Editor } from 'codemirror';
 import nanoid from 'nanoid';
 import React from 'react';
 import { Query } from '../../../models/query';
-import { TabContent } from './content';
+import { QueryButtons } from './buttons';
+import { QueryEditor } from './editor';
+import { QueryResult } from './result';
 
 const { TabPane } = Tabs;
 const TAB_ADD_KEY = '$add';
@@ -26,6 +29,8 @@ interface State {
 }
 
 export class CodeTabs extends React.PureComponent<Props, State> {
+    private editor?: Editor;
+
     constructor(props: Props) {
         super(props);
 
@@ -36,6 +41,7 @@ export class CodeTabs extends React.PureComponent<Props, State> {
 
         this.handleEdit = this.handleEdit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        this.handleEditorDidMount = this.handleEditorDidMount.bind(this);
     }
 
     private handleSelect(targetKey: any): void {
@@ -45,8 +51,13 @@ export class CodeTabs extends React.PureComponent<Props, State> {
             return;
         }
 
+        if (this.state.selected === targetKey) {
+            return;
+        }
+
         this.setState({
             selected: targetKey,
+            queries: this.updateCurrentQuery(),
         });
     }
 
@@ -58,7 +69,7 @@ export class CodeTabs extends React.PureComponent<Props, State> {
                 text: '',
                 params: {},
             };
-            const queries = [...this.state.queries, query];
+            const queries = [...this.updateCurrentQuery(), query];
 
             this.setState({
                 queries,
@@ -79,6 +90,38 @@ export class CodeTabs extends React.PureComponent<Props, State> {
         }
     }
 
+    private handleEditorDidMount(editor: Editor): void {
+        this.editor = editor;
+    }
+
+    private updateCurrentQuery(): Query[] {
+        // Fined query object of a current tab
+        const idx = this.state.queries.findIndex(
+            q => q.id === this.state.selected,
+        );
+        let queries = this.state.queries;
+
+        // Should be true
+        if (idx > -1) {
+            const current = this.state.queries[idx];
+
+            // If editor is available
+            if (current && this.editor) {
+                // Copy all quriees
+                queries = this.state.queries.slice();
+                // Replace current query with most recent values
+                queries[idx] = {
+                    id: current.id,
+                    name: current.name,
+                    params: current.params,
+                    text: this.editor.getValue(),
+                };
+            }
+        }
+
+        return queries;
+    }
+
     private renderSystemTabs(): any {
         return [
             <TabPane
@@ -96,14 +139,21 @@ export class CodeTabs extends React.PureComponent<Props, State> {
         ];
     }
 
+    private renderTab(query: Query): any {
+        return (
+            <TabPane tab={query.name} key={query.id} closable={true}>
+                <QueryEditor
+                    text={query.text}
+                    onEditorDidMount={this.handleEditorDidMount}
+                />
+                <QueryButtons />
+                <QueryResult />
+            </TabPane>
+        );
+    }
+
     public render(): any {
         const { selected, queries } = this.state;
-
-        const tabs = queries.map(query => (
-            <TabPane tab={query.name} key={query.id} closable={true}>
-                <TabContent query={query} />
-            </TabPane>
-        ));
 
         return (
             <Tabs
@@ -115,7 +165,7 @@ export class CodeTabs extends React.PureComponent<Props, State> {
                 hideAdd
                 destroyInactiveTabPane
             >
-                {tabs}
+                {queries.map(query => this.renderTab(query))}
                 {this.renderSystemTabs()}
             </Tabs>
         );
