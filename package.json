@@ -29,10 +29,10 @@
     "electronWebpack": {
         "title": true,
         "main": {
-            "sourceDirectory": "src/main"
+            "sourceDirectory": "app/main"
         },
         "renderer": {
-            "sourceDirectory": "src/renderer",
+            "sourceDirectory": "app/renderer",
             "webpackConfig": "./webpack.renderer.additions.js"
         }
     },
