@@ -1,13 +1,21 @@
 import { Col, Row } from 'antd';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { CodeTabs } from '../../common/code-tabs/tabs';
+import { ITabListStore } from '../../../stores/tab-list';
+import { CodeTabs } from './code-tabs/tabs';
 
-export class AppContent extends React.PureComponent {
+export interface Props {
+    tabs?: ITabListStore;
+}
+
+@inject('tabs')
+@observer
+export class AppContent extends React.PureComponent<Props> {
     public render(): any {
         return (
             <Row>
                 <Col span={24}>
-                    <CodeTabs />
+                    <CodeTabs tabs={this.props.tabs} />
                 </Col>
             </Row>
         );

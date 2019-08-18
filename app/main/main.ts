@@ -1,4 +1,6 @@
 import { app } from 'electron';
-import Application from './app';
+import { Bootloader } from './boot';
 
-Application.run(app);
+app.commandLine.appendSwitch('remote-debugging-port', '8315');
+
+Bootloader.load(app);

@@ -1,5 +1,5 @@
 import { Card } from 'antd';
-import * as codemirror from 'codemirror';
+import { Editor } from 'codemirror';
 import React from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 require('codemirror/mode/javascript/javascript');
@@ -20,7 +20,7 @@ const OPTIONS = {
 
 export interface Props {
     text: string;
-    onEditorDidMount?: (editor: codemirror.Editor) => void;
+    onEditorDidMount?: (editor: Editor) => void;
 }
 
 export class QueryEditor extends React.PureComponent<Props> {
@@ -30,7 +30,7 @@ export class QueryEditor extends React.PureComponent<Props> {
         this.handleEditorDidMount = this.handleEditorDidMount.bind(this);
     }
 
-    public handleEditorDidMount(editor: codemirror.Editor): void {
+    public handleEditorDidMount(editor: Editor): void {
         editor.setValue(this.props.text);
 
         if (this.props.onEditorDidMount) {
