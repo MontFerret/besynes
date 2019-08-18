@@ -1,5 +1,5 @@
 import { Api } from '../api/api';
 
-export interface AppContext {
+export interface AppEnv {
     api: Api;
 }

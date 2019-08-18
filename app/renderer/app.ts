@@ -4,7 +4,7 @@ import { Instance } from 'mobx-state-tree';
 import React from 'react';
 import { Api } from './api/api';
 import { create } from './components/index';
-import { AppContext } from './context/context';
+import { AppEnv } from './env/env';
 import { AppStore } from './stores/app';
 
 export default class Application {
@@ -18,7 +18,7 @@ export default class Application {
         this.__api = new Api(socket);
         this.__store = AppStore.create({}, {
             api: this.__api,
-        } as AppContext);
+        } as AppEnv);
     }
 
     public createElement(): React.ReactElement<any> {

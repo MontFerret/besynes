@@ -2,7 +2,7 @@ import { Icon, Tabs } from 'antd';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { ITabListStore } from '../../../../stores/tab-list';
-import { Tab } from './tab';
+import { TabContent } from './tab';
 
 const { TabPane } = Tabs;
 const TAB_ADD_KEY = '$add';
@@ -117,8 +117,10 @@ export class CodeTabs extends React.PureComponent<Props, State> {
                 hideAdd
                 destroyInactiveTabPane
             >
-                {tabs!.items.map(tab => (
-                    <Tab store={tab} />
+                {tabs!.items.map((tab, idx) => (
+                    <TabPane tab={tab.name} key={idx.toString()} closable>
+                        <TabContent store={tab} />
+                    </TabPane>
                 ))}
                 {this.renderSystemTabs()}
             </Tabs>

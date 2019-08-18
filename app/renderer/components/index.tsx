@@ -1,23 +1,22 @@
-import { Provider as MobXProvider } from 'mobx-react';
-import { Instance } from 'mobx-state-tree';
 import React from 'react';
-import { AppStore } from '../stores/app';
+import { IAppStore } from '../stores/app';
+import { StoreProvider } from './common/context';
 import { IndexScreen } from './screens/index';
 
 export interface Props {
-    store: Instance<typeof AppStore>;
+    store: IAppStore;
 }
 
 export class AppComponent extends React.PureComponent<Props> {
     public render(): any {
         return (
-            <MobXProvider store={this.props.store}>
+            <StoreProvider store={this.props.store}>
                 <IndexScreen />;
-            </MobXProvider>
+            </StoreProvider>
         );
     }
 }
 
-export function create(store: Instance<typeof AppStore>): any {
+export function create(store: IAppStore): any {
     return <AppComponent store={store} />;
 }

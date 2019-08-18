@@ -1,4 +1,3 @@
-import { Tabs } from 'antd';
 import { Editor } from 'codemirror';
 import { observer } from 'mobx-react';
 import React from 'react';
@@ -7,14 +6,12 @@ import { QueryButtons } from './buttons';
 import { QueryEditor } from './editor';
 import { QueryResult } from './result';
 
-const { TabPane } = Tabs;
-
 export interface Props {
     store: ITabStore;
 }
 
 @observer
-export class Tab extends React.PureComponent<Props> {
+export class TabContent extends React.PureComponent<Props> {
     private __editor?: Editor;
 
     constructor(props: Props) {
@@ -34,17 +31,17 @@ export class Tab extends React.PureComponent<Props> {
     }
 
     public render(): any {
-        const { store: query } = this.props;
+        const { store } = this.props;
 
         return (
-            <TabPane tab={query.name} key={query.id} closable={true}>
+            <>
                 <QueryEditor
-                    text={query.text}
+                    text={store.text}
                     onEditorDidMount={this.handleEditorDidMount}
                 />
                 <QueryButtons />
                 <QueryResult />
-            </TabPane>
+            </>
         );
     }
 }

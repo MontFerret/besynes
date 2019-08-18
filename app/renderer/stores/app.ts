@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree';
+import { Instance, types } from 'mobx-state-tree';
 import { QueryListStore } from './query-list';
 import { TabListStore } from './tab-list';
 
@@ -10,3 +10,5 @@ export const AppStore = types.model({
         items: [],
     }),
 });
+
+export interface IAppStore extends Instance<typeof AppStore> {}

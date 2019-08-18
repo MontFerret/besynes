@@ -1,6 +1,6 @@
 import { Instance, flow, getEnv, types } from 'mobx-state-tree';
 import { Tab } from '../../common/models/tab';
-import { AppContext } from '../context/context';
+import { AppEnv } from '../env/env';
 
 export const TabStore = types
     .compose(
@@ -20,7 +20,7 @@ export const TabStore = types
             },
 
             execute: flow(function*(): any {
-                const ctx = getEnv<AppContext>(self);
+                const ctx = getEnv<AppEnv>(self);
 
                 self.isLoading = true;
                 self.error = undefined;
