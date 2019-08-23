@@ -56,10 +56,7 @@ export class Bootloader {
 
         if (Bootloader.__app == null) {
             Bootloader.__app = new Application({
-                socket: new Socket(
-                    '@besynes',
-                    new Transport(ipcMain, Bootloader.__output),
-                ),
+                socket: new Socket(new Transport(ipcMain, Bootloader.__output)),
             });
         }
     }

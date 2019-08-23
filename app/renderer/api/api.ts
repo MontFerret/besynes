@@ -6,6 +6,7 @@ export class Api {
 
     constructor(socket: Socket) {
         this.__socket = socket;
+        this.__socket.open('@besynes');
     }
 
     public async executeQuery(q: IQuery): Promise<any> {

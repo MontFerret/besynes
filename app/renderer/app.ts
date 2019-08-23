@@ -12,10 +12,7 @@ export default class Application {
     private readonly __store: Instance<typeof AppStore>;
 
     constructor() {
-        const socket = new Socket('@besynes', ipcRenderer);
-        socket.open();
-
-        this.__api = new Api(socket);
+        this.__api = new Api(new Socket(ipcRenderer));
         this.__store = AppStore.create({}, {
             api: this.__api,
         } as AppEnv);
