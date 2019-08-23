@@ -24,7 +24,7 @@ install:
 	go mod vendor && go mod tidy
 
 compile:
-	go build -v --ldflags '-extldflags "-static"' -o ${DIR_BIN}/worker ${DIR_SRC}/main.go
+	go build -v -o ${DIR_BIN}/worker ${DIR_SRC}/main.go
 
 test:
 	${NODE_BIN}/mocha
