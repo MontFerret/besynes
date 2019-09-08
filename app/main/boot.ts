@@ -1,5 +1,5 @@
 import { App as Electron, BrowserWindow, ipcMain } from 'electron';
-import { Socket, Transport } from 'electron-ipc-socket';
+import { Transport } from 'electron-ipc-socket';
 import isDev from 'electron-is-dev';
 import path from 'path';
 import { Application } from './app';
@@ -56,7 +56,8 @@ export class Bootloader {
 
         if (Bootloader.__app == null) {
             Bootloader.__app = new Application({
-                socket: new Socket(new Transport(ipcMain, Bootloader.__output)),
+                worker: path.join(__dirname, 'worker'),
+                transport: new Transport(ipcMain, Bootloader.__output),
             });
         }
     }

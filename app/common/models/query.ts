@@ -5,7 +5,7 @@ export const Query = types.model('Query', {
     name: types.string,
     description: types.optional(types.string, ''),
     text: types.optional(types.string, ''),
-    params: types.maybeNull(types.model()),
+    params: types.maybeNull(types.map(types.model())),
 });
 
 export interface IQuery extends Instance<typeof Query> {}

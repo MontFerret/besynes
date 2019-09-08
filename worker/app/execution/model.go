@@ -16,7 +16,7 @@ type (
 		ID         string                 `json:"id"`
 		Text       string                 `json:"text"`
 		Params     map[string]interface{} `json:"params"`
-		CDPAddress string                 `json:"cdp_address"`
+		CDPAddress string                 `json:"cdp"`
 	}
 
 	// Job represents a running script

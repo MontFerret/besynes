@@ -5,7 +5,6 @@ import (
 	"runtime"
 
 	"github.com/MontFerret/ferret/pkg/compiler"
-	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 )
@@ -50,7 +49,7 @@ func NewService(
 	return s, nil
 }
 
-func (service *Service) Consume(ctx context.Context, process <-chan Query, interrupt <-chan string) <-chan Result {
+func (service *Service) Consume(ctx context.Context, process <-chan Job, interrupt <-chan string) <-chan Result {
 	onJob := make(chan Job, service.pool.Size())
 
 	go func() {
@@ -62,24 +61,11 @@ func (service *Service) Consume(ctx context.Context, process <-chan Query, inter
 			select {
 			case <-ctx.Done():
 				return
-			case q, closed := <-process:
+			case job, closed := <-process:
 				if closed {
 					stop()
 
 					return
-				}
-
-				id, err := uuid.NewV4()
-
-				if err != nil {
-					continue
-				}
-
-				jobID := id.String()
-
-				job := Job{
-					ID:    jobID,
-					Query: q,
 				}
 
 				onJob <- job

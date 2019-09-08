@@ -23,8 +23,8 @@ func NewSubscriber(logger zerolog.Logger, addr string) *Subscriber {
 }
 
 // run the subscriber
-func (sub *Subscriber) Produce(ctx context.Context) (<-chan execution.Query, <-chan error) {
-	onData := make(chan execution.Query, 50)
+func (sub *Subscriber) Produce(ctx context.Context) (<-chan execution.Job, <-chan error) {
+	onData := make(chan execution.Job, 50)
 	onError := make(chan error, 50)
 
 	go func() {
@@ -89,9 +89,9 @@ func (sub *Subscriber) Produce(ctx context.Context) (<-chan execution.Query, <-c
 					continue
 				}
 
-				var query execution.Query
+				var job execution.Job
 
-				if err := json.Unmarshal(msg[0], &query); err != nil {
+				if err := json.Unmarshal(msg[0], &job); err != nil {
 					sub.logger.Err(err).Msg("failed to unmarshal a message")
 
 					onError <- errors.Wrap(err, "unmarshal a message")
@@ -99,7 +99,7 @@ func (sub *Subscriber) Produce(ctx context.Context) (<-chan execution.Query, <-c
 					continue
 				}
 
-				onData <- query
+				onData <- job
 			}
 		}
 	}()
