@@ -15,5 +15,6 @@ vendor/
 dist/
 .cache/
 .idea/
+deploy/
 
 build-qt-Desktop-Default
