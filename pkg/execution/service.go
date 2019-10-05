@@ -11,14 +11,14 @@ import (
 
 type Service struct {
 	logger   zerolog.Logger
-	compiler *compiler.FqlCompiler
+	compiler *compiler.Compiler
 	pool     *WorkerPool
 }
 
 func NewService(
 	settings Settings,
 	logger zerolog.Logger,
-	compiler *compiler.FqlCompiler,
+	compiler *compiler.Compiler,
 ) (*Service, error) {
 	if compiler == nil {
 		return nil, errors.New("missed compiler")
