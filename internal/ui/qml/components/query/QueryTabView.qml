@@ -1,8 +1,8 @@
 import QtQuick 2.13
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.5
+import QtQuick.Controls 1.4 as C1
+import QtQuick.Controls 2.13
 import QtQuick.Controls.Styles 1.4
-import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material 2.13
 
 Item {
     anchors.fill: parent
@@ -12,7 +12,7 @@ Item {
         QueryEditor {}
     }
 
-    TabView {
+    C1.TabView {
         id: queryTabsList
         anchors.fill: parent
         style: TabViewStyle {
@@ -29,10 +29,10 @@ Item {
                     anchors.fill: parent
                     text: styleData.title
                     onClicked: {
-                        if (tabButton.text === "+") {
+                        if (isButton()) {
                             var tab_count = queryTabsList.count
                             var t = queryTabsList.insertTab(tab_count > 0 ? tab_count - 1 : 0, "Untitled Query", editor)
-                            t.active = true; // real loading
+                            t.active = true;
 
                             queryTabsList.currentIndex = tab_count - 1
                         } else {
@@ -42,8 +42,8 @@ Item {
 
                     Button {
                         id: tabCloseButton
-                        text: tabButton.text !== "+" ? "x" : ""
-                        visible: false
+                        text: !isButton() ? "x" : ""
+                        visible: !isButton()
                         width: 25
                         anchors.right: parent.right
                         contentItem: Text {
@@ -70,7 +70,7 @@ Item {
                         height: 3
                         anchors.bottom: parent.bottom
                         color: "#81D4FA"
-                        visible: styleData.title !== '+' && styleData.selected
+                        visible: !isButton() && styleData.selected
                     }
 
 //                    MouseArea {
@@ -89,10 +89,10 @@ Item {
 //                    }
                 }
             }
-            frame: styleData && styleData.title !== '+' ? editor : null
+            frame: styleData ? editor : null
         }
 
-        Tab {
+        C1.Tab {
             id: tabAdd
             title: qsTr("+")
         }

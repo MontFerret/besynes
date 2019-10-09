@@ -2,7 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>QueryEditor.qml</file>
-        <file>QueryTabView.qml</file>
+        <file>components/query/QueryEditor.qml</file>
+        <file>components/query/QueryTabView.qml</file>
     </qresource>
 </RCC>
