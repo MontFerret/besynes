@@ -33,9 +33,9 @@ func New(
 }
 
 func (e *Engine) Run() error {
-	//execStore := stores.NewExecutionStore(nil)
-	//
-	//e.app.RootContext().SetContextProperty("ExecutionStore", execStore)
+	// execStore := stores.NewExecutionStore(nil)
+
+	// e.app.RootContext().SetContextProperty("ExecutionStore", execStore)
 	e.app.Load(core.NewQUrl3("qrc:/qt/main.qml", 0))
 
 	e.window.Exec()

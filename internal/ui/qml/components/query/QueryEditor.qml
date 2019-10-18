@@ -44,13 +44,11 @@ Item {
 
             SplitView {
                 anchors.fill: parent
-                //orientation: Qt.Horizontal
 
-
-                Item {
-                    SplitView.minimumWidth: parent.width / 2
-                    SplitView.preferredWidth: parent.width / 2
-                    width: parent.width / 2
+                Rectangle {
+                    id: queryPane
+                    SplitView.fillWidth: true
+                    SplitView.minimumWidth: 200
 
                     ColumnLayout {
                         spacing: 2
@@ -80,10 +78,10 @@ Item {
                     }
                 }
 
-                Item {
-                    SplitView.minimumWidth: 0
-                    SplitView.preferredWidth: parent.width / 2
-                    width: parent.width / 2
+                Rectangle {
+                    // implicitWidth: parent.width / 4
+                    SplitView.minimumWidth: 150
+                    // SplitView.preferredWidth: parent.width / 2
 
                     ColumnLayout {
                         spacing: 2
