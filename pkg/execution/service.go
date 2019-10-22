@@ -2,7 +2,10 @@ package execution
 
 import (
 	"context"
-	"runtime"
+	"github.com/MontFerret/ferret/pkg/drivers"
+	"github.com/MontFerret/ferret/pkg/drivers/cdp"
+	"github.com/MontFerret/ferret/pkg/drivers/http"
+	"github.com/MontFerret/ferret/pkg/runtime"
 
 	"github.com/MontFerret/ferret/pkg/compiler"
 	"github.com/pkg/errors"
@@ -12,11 +15,9 @@ import (
 type Service struct {
 	logger   zerolog.Logger
 	compiler *compiler.Compiler
-	pool     *WorkerPool
 }
 
 func NewService(
-	settings Settings,
 	logger zerolog.Logger,
 	compiler *compiler.Compiler,
 ) (*Service, error) {
@@ -28,52 +29,34 @@ func NewService(
 	s.logger = logger
 	s.compiler = compiler
 
-	size := runtime.NumCPU() * settings.PoolSize
-	pool, err := NewWorkerPool(size, logger, func(job Job) Worker {
-		return NewFQLWorker(
-			compiler,
-			logger.With().
-				Str("job_id", job.ID).
-				Str("query_id", job.Query.ID).
-				Logger(),
-			job,
-		)
-	})
+	return s, nil
+}
+
+func (svc *Service) Execute(ctx context.Context, query Query) ([]byte, error) {
+	ctx = drivers.WithContext(ctx, http.NewDriver(), drivers.AsDefault())
+	ctx = drivers.WithContext(ctx, cdp.NewDriver(cdp.WithAddress(query.CDPAddress)))
+
+	program, err := svc.compiler.Compile(query.Text)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "compile query")
+	}
+
+	params := make(map[string]interface{}, len(query.Params))
+
+	for k, v := range query.Params {
+		params[k] = v
+	}
+
+	out, err := program.Run(
+		ctx,
+		runtime.WithLog(svc.logger),
+		runtime.WithParams(params),
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	s.pool = pool
-
-	return s, nil
-}
-
-func (service *Service) Consume(ctx context.Context, process <-chan Job, interrupt <-chan string) <-chan Result {
-	onJob := make(chan Job, service.pool.Size())
-
-	go func() {
-		stop := func() {
-			close(onJob)
-		}
-
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case job, closed := <-process:
-				if closed {
-					stop()
-
-					return
-				}
-
-				onJob <- job
-			case jobID := <-interrupt:
-				service.pool.Cancel(ctx, jobID)
-			}
-		}
-	}()
-
-	return service.pool.Consume(ctx, onJob)
+	return out, nil
 }

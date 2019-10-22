@@ -40,6 +40,7 @@ Item {
                         }
                     }
 
+                    // Close button
                     Button {
                         id: tabCloseButton
                         text: !isButton() ? "x" : ""
@@ -65,6 +66,7 @@ Item {
                         }
                     }
 
+                    // Bottom line of a selected tab
                     Rectangle {
                         width: parent.width
                         height: 3
@@ -72,23 +74,9 @@ Item {
                         color: "#81D4FA"
                         visible: !isButton() && styleData.selected
                     }
-
-//                    MouseArea {
-//                        anchors.fill: parent
-//                        preventStealing: true
-//                        enabled: tabButton.text !== "+"
-//                        hoverEnabled: tabButton.text !== "+"
-//                        onEntered: {
-//                            if (tabButton.text !== "+") {
-//                                tabCloseButton.visible = true
-//                            }
-//                        }
-//                        onExited: {
-//                            tabCloseButton.visible = false
-//                        }
-//                    }
                 }
             }
+
             frame: styleData ? editor : null
         }
 

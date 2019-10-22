@@ -5,10 +5,10 @@ CURRENT_OS=$(shell uname -s | awk '{print tolower($0)}')
 
 default: build
 
-start: generate
+start:
 	qtdeploy -fast test desktop
 
-build: generate
+build:
 	qtdeploy -fast build desktop
 
 install:

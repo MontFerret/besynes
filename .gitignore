@@ -18,3 +18,8 @@ dist/
 deploy/
 
 build-besynes-Desktop-Default
+
+#rcc*
+#moc.*
+#moc_*
+#.qmake.stash

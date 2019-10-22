@@ -7,12 +7,30 @@ Item {
     property string name: qsTr("UNTITLED QUERY")
     property string text: qsTr("")
 
+    id: root
     anchors.fill: parent
+
+    states: [
+        State {
+            name: "ready"
+            PropertyChanges { target: execBtn; enabled: true }
+            PropertyChanges { target: queryEditor; enabled: true }
+        },
+        State {
+            name: "loading"
+            PropertyChanges { target: execBtn; enabled: false }
+            PropertyChanges { target: queryEditor; enabled: false }
+        }
+    ]
+
+    Component.onCompleted: {
+        root.state = "ready"
+    }
 
     Page {
         anchors.fill: parent
         anchors.topMargin: 2
-        padding: 15
+        padding: 5
 
         header: ToolBar {
             Material.background: Material.DeepPurple
@@ -31,115 +49,71 @@ Item {
                 }
 
                 Button {
+                    Material.background: Material.Blue
                     id: execBtn
                     text: "Exec"
                     highlighted: true
-                    Material.background: Material.Blue
+                    onClicked: {
+                        root.state = "loading"
+
+                        try {
+                            var result = execution.execute(queryEditor.text, qsTr(""))
+
+                            resultsView.value = result.data ? result.data : result.error
+                        } catch (e) {
+                            resultsView.value = e.toString()
+                        } finally {
+                            root.state = "ready"
+                        }
+                    }
                 }
             }
         }
 
-        Rectangle {
+        SplitView {
             anchors.fill: parent
+            orientation: Qt.Vertical
 
-            SplitView {
-                anchors.fill: parent
+            Rectangle {
+                SplitView.fillWidth: true
+                SplitView.fillHeight: true
+                SplitView.minimumHeight: 200
 
-                Rectangle {
-                    id: queryPane
-                    SplitView.fillWidth: true
-                    SplitView.minimumWidth: 200
+                SplitView {
+                    anchors.fill: parent
+                    orientation: Qt.Horizontal
 
-                    ColumnLayout {
-                        spacing: 2
+                    Pane {
+                        SplitView.fillWidth: true
+                        SplitView.minimumWidth: 200
+                        id: queryPane
 
-                        Text {
-                            id: queryTitle
-                            text: "query"
-                            opacity: 0.8
-                            padding: 10
-                        }
-
-                        Rectangle {
-                            Layout.fillWidth: true
-                            border.width: 1
-                            border.color: "#EEEEEE"
-                            radius: 5
-
-                            TextEdit {
-                                id: query
-                                anchors.fill: parent
-                                color: "black"
-                                padding: 10
-                                focus: true
-                                text: text
-                            }
+                        CodeEditor {
+                            id: queryEditor
+                            anchors.fill: parent
+                            text: text
                         }
                     }
-                }
 
-                Rectangle {
-                    // implicitWidth: parent.width / 4
-                    SplitView.minimumWidth: 150
-                    // SplitView.preferredWidth: parent.width / 2
+                    Pane {
+                        SplitView.minimumWidth: 150
 
-                    ColumnLayout {
-                        spacing: 2
-
-                        Text {
-                            text: "params"
-                            opacity: 0.8
-                            padding: 10
-                        }
-
-                        Rectangle {
-//                            anchors.fill: parent
-                            border.width: 1
-                            border.color: "#EEEEEE"
-                            radius: 5
-
-                            TextEdit {
-                                id: params
-                                anchors.fill: parent
-                                color: "black"
-                                padding: 10
-                                focus: true
-                                text: text
-                            }
+                        ParamsEditor {
+                            anchors.fill: parent
+                            id: paramsEditor
                         }
                     }
                 }
             }
 
+            Pane {
+                SplitView.minimumHeight: 150
 
-
-
-//            Grid {
-//                columns: 1
-//                spacing: 0
-//                anchors.fill: parent
-
-//                Rectangle {
-//                    border.color: "#EEEEEE"
-//                    border.width: 1
-//                    width: parent.width
-//                    height: 40
-
-//                    Text {
-//                        text: "Result"
-//                        color: "#EEEEEE"
-//                        opacity: 0.5
-//                    }
-//                }
-
-//                TextEdit {
-//                    id: params
-//                    // anchors.fill: parent
-//                    color: "black"
-//                    focus: true
-//                    text: text
-//                }
-//            }
+                ResultsView {
+                    id: resultsView
+                    anchors.fill: parent
+                }
+            }
         }
     }
 }

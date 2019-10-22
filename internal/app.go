@@ -18,7 +18,7 @@ func New() (*Application, error) {
 
 	fc := compiler.New()
 
-	exec, err := execution.NewService(execution.NewDefaultSettings(), logger, fc)
+	exec, err := execution.NewService(logger, fc)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "execution service")

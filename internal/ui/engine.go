@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"github.com/MontFerret/besynes/internal/ui/controllers"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -8,6 +9,7 @@ import (
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/qml"
 
+	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
@@ -25,18 +27,20 @@ func New(
 	core.QCoreApplication_SetAttribute(core.Qt__AA_EnableHighDpiScaling, true)
 
 	return &Engine{
-		logger: logger,
+		logger:   logger,
 		executor: executor,
-		window: gui.NewQGuiApplication(len(os.Args), os.Args),
-		app:    qml.NewQQmlApplicationEngine(nil),
+		window:   gui.NewQGuiApplication(len(os.Args), os.Args),
+		app:      qml.NewQQmlApplicationEngine(nil),
 	}, nil
 }
 
 func (e *Engine) Run() error {
-	// execStore := stores.NewExecutionStore(nil)
+	execBridge := bridges.NewExecution(nil)
 
-	// e.app.RootContext().SetContextProperty("ExecutionStore", execStore)
-	e.app.Load(core.NewQUrl3("qrc:/qt/main.qml", 0))
+	_ = controllers.NewExecution(execBridge, e.logger, e.executor)
+
+	e.app.RootContext().SetContextProperty("execution", execBridge)
+	e.app.Load(core.NewQUrl3("qrc:/qml/main.qml", 0))
 
 	e.window.Exec()
 
