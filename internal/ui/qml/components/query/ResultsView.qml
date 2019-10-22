@@ -1,7 +1,9 @@
 import QtQuick 2.13
 
 Item {
-    property string value: qsTr("")
+    id: root
+
+    property var value: ({ data: "", error: "" })
 
     Rectangle {
         anchors.fill: parent
@@ -12,9 +14,9 @@ Item {
         Text {
             id: results
             anchors.fill: parent
-            color: "black"
+            color: value.error ? "red" : "black"
             focus: true
-            text: value
+            text: value.error ? value.error : value.data
             padding: 10
             wrapMode: TextEdit.WrapAnywhere
         }

@@ -11,4 +11,5 @@ type Result struct {
 
 func init() {
 	Result_QRegisterMetaType()
+	Result_QmlRegisterType2("besynes.models.query", 1, 0, "Result")
 }

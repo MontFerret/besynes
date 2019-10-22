@@ -2,10 +2,11 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.13
+import besynes.models.query 1.0
 
 Item {
-    property string name: qsTr("UNTITLED QUERY")
-    property string text: qsTr("")
+    property string name: "UNTITLED QUERY"
+    property string text: ""
 
     id: root
     anchors.fill: parent
@@ -57,11 +58,13 @@ Item {
                         root.state = "loading"
 
                         try {
-                            var result = execution.execute(queryEditor.text, qsTr(""))
-
-                            resultsView.value = result.data ? result.data : result.error
+                            // const result
+                            resultsView.value = execution.execute(queryEditor.text, qsTr(""))
                         } catch (e) {
-                            resultsView.value = e.toString()
+                            resultsView.value = {
+                                data: "",
+                                error: e.toString()
+                            }
                         } finally {
                             root.state = "ready"
                         }
