@@ -20,6 +20,6 @@ deploy/
 build-besynes-Desktop-Default
 
 #rcc*
-#moc.*
-#moc_*
+moc.*
+moc_*
 #.qmake.stash
