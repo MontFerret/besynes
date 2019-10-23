@@ -36,9 +36,19 @@ Item {
         padding: 5
 
         header: ToolBar {
-            Material.background: Material.DeepPurple
             leftPadding: 15
             rightPadding: 15
+            background: Rectangle {
+                anchors.fill: parent
+                color: "#fafafa"
+
+                Rectangle {
+                    width: parent.width
+                    height: 2
+                    anchors.bottom: parent.bottom
+                    color: "#eeeeee"
+                }
+            }
 
             RowLayout {
                 anchors.fill: parent
@@ -61,7 +71,7 @@ Item {
 
                         try {
                             // const result
-                            execution.execute({
+                            queryApi.execute({
                                 text: queryEditor.text
                             }, (err, result) => {
                                 resultsView.value = {

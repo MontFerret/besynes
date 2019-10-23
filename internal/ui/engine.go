@@ -39,7 +39,7 @@ func (e *Engine) Run() error {
 
 	_ = controllers.NewExecution(execBridge, e.logger, e.executor)
 
-	e.app.RootContext().SetContextProperty("execution", execBridge)
+	e.app.RootContext().SetContextProperty("queryApi", execBridge)
 	e.app.Load(core.NewQUrl3("qrc:/qml/main.qml", 0))
 
 	e.window.Exec()

@@ -23,11 +23,23 @@ Item {
 
                 implicitWidth: !isButton() ? 175 : 40
                 implicitHeight: 40
+                color: Material.color(Material.Grey, Material.Shade200)
+                anchors.right: parent.right
+                anchors.top: parent.top
 
                 TabButton {
                     id: tabButton
                     anchors.fill: parent
-                    text: styleData.title
+                    contentItem: Text {
+                        anchors.fill: parent
+                        text: styleData.title
+                        font.family: parent.font.family
+                        font.bold: false
+                        font.capitalization: Font.AllUppercase
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
                     onClicked: {
                         if (isButton()) {
                             var tab_count = queryTabsList.count
