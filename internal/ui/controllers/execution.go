@@ -2,11 +2,14 @@ package controllers
 
 import (
 	"context"
+	"github.com/pkg/errors"
+	"github.com/therecipe/qt/core"
+	"github.com/therecipe/qt/qml"
+	"runtime"
 
 	"github.com/rs/zerolog"
 
 	"github.com/MontFerret/besynes/internal/ui/bridges"
-	"github.com/MontFerret/besynes/internal/ui/models"
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
@@ -26,20 +29,49 @@ func NewExecution(bridge *bridges.Execution, logger zerolog.Logger, service *exe
 	return ctl
 }
 
-func (ctl *Execution) execute(query string, addr string) *models.Result {
-	data, err := ctl.service.Execute(context.Background(), execution.Query{
-		Text:       query,
-		Params:     nil,
-		CDPAddress: "127.0.0.1:9222",
-	})
+func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				var err error
 
-	result := models.NewResult(nil)
+				// find out exactly what the error was and set err
+				switch x := r.(type) {
+				case string:
+					err = errors.New(x)
+				case error:
+					err = x
+				default:
+					err = errors.New("unknown panic")
+				}
 
-	if err != nil {
-		result.SetError(err.Error())
-	} else {
-		result.SetData(string(data))
-	}
+				b := make([]byte, 0, 20)
+				runtime.Stack(b, true)
 
-	return result
+				ctl.logger.Error().
+					Timestamp().
+					Err(err).
+					Str("stack", string(b)).
+					Msg("Panic")
+			}
+		}()
+
+		text := query.Value("text")
+
+		data, err := ctl.service.Execute(context.Background(), execution.Query{
+			Text:       text.ToString(),
+			Params:     nil,
+			CDPAddress: "127.0.0.1:9222",
+		})
+
+		args := make([]*qml.QJSValue, 0, 2)
+
+		if err != nil {
+			args = append(args, qml.NewQJSValue10(err.Error()))
+		} else {
+			args = append(args, qml.NewQJSValue10(""), qml.NewQJSValue10(string(data)))
+		}
+
+		callback.Call(args)
+	}()
 }

@@ -2,12 +2,11 @@ package bridges
 
 import (
 	"github.com/therecipe/qt/core"
-
-	"github.com/MontFerret/besynes/internal/ui/models"
+	"github.com/therecipe/qt/qml"
 )
 
 type Execution struct {
 	core.QObject
 
-	_ func(query, addr string) *models.Result `slot:"execute"`
+	_ func(query *core.QJsonObject, callback *qml.QJSValue) `slot:"execute"`
 }

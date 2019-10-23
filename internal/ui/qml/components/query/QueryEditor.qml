@@ -2,7 +2,6 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.13
-import besynes.models.query 1.0
 
 Item {
     property string name: "UNTITLED QUERY"
@@ -16,11 +15,13 @@ Item {
             name: "ready"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
+            PropertyChanges { target: spinner; running: false }
         },
         State {
             name: "loading"
             PropertyChanges { target: execBtn; enabled: false }
             PropertyChanges { target: queryEditor; enabled: false }
+            PropertyChanges { target: spinner; running: true }
         }
     ]
 
@@ -29,6 +30,7 @@ Item {
     }
 
     Page {
+        id: page
         anchors.fill: parent
         anchors.topMargin: 2
         padding: 5
@@ -59,13 +61,22 @@ Item {
 
                         try {
                             // const result
-                            resultsView.value = execution.execute(queryEditor.text, qsTr(""))
+                            execution.execute({
+                                text: queryEditor.text
+                            }, (err, result) => {
+                                resultsView.value = {
+                                    data: result,
+                                    error: err
+                                }
+
+                                root.state = "ready"
+                            })
                         } catch (e) {
                             resultsView.value = {
                                 data: "",
                                 error: e.toString()
                             }
-                        } finally {
+
                             root.state = "ready"
                         }
                     }
@@ -73,48 +84,59 @@ Item {
             }
         }
 
-        SplitView {
+        Rectangle {
             anchors.fill: parent
-            orientation: Qt.Vertical
 
-            Rectangle {
-                SplitView.fillWidth: true
-                SplitView.fillHeight: true
-                SplitView.minimumHeight: 200
+            BusyIndicator {
+                id: spinner
+                anchors.centerIn: parent
+                running: false
+                z: 90
+            }
 
-                SplitView {
-                    anchors.fill: parent
-                    orientation: Qt.Horizontal
+            SplitView {
+                anchors.fill: parent
+                orientation: Qt.Vertical
 
-                    Pane {
-                        SplitView.fillWidth: true
-                        SplitView.minimumWidth: 200
-                        id: queryPane
+                Rectangle {
+                    SplitView.fillWidth: true
+                    SplitView.fillHeight: true
+                    SplitView.minimumHeight: 200
 
-                        CodeEditor {
-                            id: queryEditor
-                            anchors.fill: parent
-                            text: text
+                    SplitView {
+                        anchors.fill: parent
+                        orientation: Qt.Horizontal
+
+                        Pane {
+                            SplitView.fillWidth: true
+                            SplitView.minimumWidth: 200
+                            id: queryPane
+
+                            CodeEditor {
+                                id: queryEditor
+                                anchors.fill: parent
+                                text: text
+                            }
                         }
-                    }
 
-                    Pane {
-                        SplitView.minimumWidth: 150
+                        Pane {
+                            SplitView.minimumWidth: 150
 
-                        ParamsEditor {
-                            anchors.fill: parent
-                            id: paramsEditor
+                            ParamsEditor {
+                                anchors.fill: parent
+                                id: paramsEditor
+                            }
                         }
                     }
                 }
-            }
 
-            Pane {
-                SplitView.minimumHeight: 150
+                Pane {
+                    SplitView.minimumHeight: 150
 
-                ResultsView {
-                    id: resultsView
-                    anchors.fill: parent
+                    ResultsView {
+                        id: resultsView
+                        anchors.fill: parent
+                    }
                 }
             }
         }
