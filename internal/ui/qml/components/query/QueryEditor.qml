@@ -98,9 +98,67 @@ Item {
                 z: 90
             }
 
+            Component {
+                id: splitHandle
+
+                Rectangle {
+                    function isVertical() {
+                        return parent.orientation === Qt.Vertical
+                    }
+
+                    id: root
+                    implicitWidth: 8
+                    implicitHeight: 8
+                    color: Material.color(Material.Grey, Material.Shade50)
+                    state: SplitHandle.pressed ? "pressed" : "released"
+                    states: [
+                        State {
+                            name: "released"
+                            PropertyChanges {
+                                target: handle;
+                                width: isVertical() ? 10 : 1;
+                                height: isVertical() ? 1 : 10;
+                                radius: 0
+                            }
+                        },
+
+                        State {
+                            name: "pressed"
+                            PropertyChanges {
+                                target: handle;
+                                width: 3;
+                                height: 3;
+                                radius: 3
+                            }
+                        }
+                    ]
+
+                    Rectangle {
+                        id: handle
+                        anchors.centerIn: parent
+                        color: Material.color(Material.Grey)
+
+                        Behavior on height {
+                            PropertyAnimation {
+                                easing.type: Easing.InQuad;
+                                duration: 100
+                            }
+                        }
+
+                        Behavior on width {
+                            PropertyAnimation {
+                                easing.type: Easing.InQuad;
+                                duration: 100
+                            }
+                        }
+                    }
+                }
+            }
+
             SplitView {
                 anchors.fill: parent
                 orientation: Qt.Vertical
+                handle: splitHandle
 
                 Rectangle {
                     SplitView.fillWidth: true
@@ -110,6 +168,7 @@ Item {
                     SplitView {
                         anchors.fill: parent
                         orientation: Qt.Horizontal
+                        handle: splitHandle
 
                         Pane {
                             SplitView.fillWidth: true
