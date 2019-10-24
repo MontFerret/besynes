@@ -1,100 +1,148 @@
 import QtQuick 2.13
-import QtQuick.Controls 1.4 as C1
 import QtQuick.Controls 2.13
+import QtQuick.Layouts 1.13
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls.Material 2.13
 
 Item {
     anchors.fill: parent
 
-    Component {
-        id: editor
-        QueryEditor {}
+    function insertContentAt(item, idx) {
+        const children = queryContentList.children
+        const current = children[idx]
+        children.push(item)
+        children[idx] = item
+        children[children.length -1] = current
     }
 
-    C1.TabView {
-        id: queryTabsList
+    function removeContentAt(idx) {
+        const children = queryContentList.children
+        const len = children.length
+        const new_children = []
+
+        console.log('removing:', idx)
+
+        for (let i = 0; i < len; i++) {
+            if (i !== idx) {
+                new_children.push(children[i])
+            }
+        }
+
+        queryContentList.children = new_children
+    }
+
+    function newTab() {
+        const tabs_count = queryTabList.count
+        const idx = tabs_count
+        const id = `query_${Math.random().toString()}`
+
+        const btn = tabBtn.createObject(queryTabList, {
+            uid: id,
+            text: `UNTITLED QUERY ${tabs_count + 1}`
+        })
+        const content = tabContent.createObject(queryContentList, {
+            uid: id
+        })
+
+        queryTabList.insertItem(idx, btn)
+        insertContentAt(content, idx)
+
+        queryTabList.setCurrentIndex(idx)
+    }
+
+    function closeTab(target_uid) {
+        const len = queryTabList.count
+        let idx = -1
+        let current_item;
+
+        for (var i = 0; i < len; ++i) {
+            current_item = queryTabList.itemAt(i)
+
+            if (current_item.uid === target_uid) {
+                idx = i
+                break
+            }
+        }
+
+        if (idx > -1) {
+            queryTabList.removeItem(current_item)
+            removeContentAt(idx)
+            queryTabList.setCurrentIndex(idx)
+        }
+    }
+
+    Page {
         anchors.fill: parent
-        style: TabViewStyle {
-            tab: Rectangle {
-                function isButton() {
-                    return !styleData || styleData.title === '+';
+        header: RowLayout {
+            width: parent.width
+            spacing: 0
+
+            TabBar {
+                id: queryTabList
+                Layout.fillWidth: true
+                Material.accent: Material.Purple
+
+                Component {
+                    id: tabBtn
+
+                    TabButton {
+                        property string uid: ''
+                        Material.accent: Material.Purple
+
+                        Button {
+                            id: tabCloseButton
+                            text: "x"
+                            width: 25
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            anchors.rightMargin: 10
+                            contentItem: Text {
+                                text: tabCloseButton.text
+                                font.family: parent.font.family
+                                font.bold: false
+                                font.pixelSize: 14
+                                font.capitalization: Font.AllLowercase
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                            background: Rectangle {
+                                opacity: 0
+                                border.width: 0
+                            }
+                            onClicked: closeTab(this.parent.uid)
+                        }
+                    }
                 }
 
-                implicitWidth: !isButton() ? 175 : 40
-                implicitHeight: 40
-                color: Material.color(Material.Grey, Material.Shade200)
-                anchors.right: parent.right
-                anchors.top: parent.top
+                Component {
+                    id: tabContent
+                    QueryEditor {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
 
-                TabButton {
-                    id: tabButton
-                    anchors.fill: parent
-                    contentItem: Text {
-                        anchors.fill: parent
-                        text: styleData.title
-                        font.family: parent.font.family
-                        font.bold: false
-                        font.capitalization: Font.AllUppercase
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-                    onClicked: {
-                        if (isButton()) {
-                            var tab_count = queryTabsList.count
-                            var t = queryTabsList.insertTab(tab_count > 0 ? tab_count - 1 : 0, "Untitled Query", editor)
-                            t.active = true;
-
-                            queryTabsList.currentIndex = tab_count - 1
-                        } else {
-                            queryTabsList.currentIndex = styleData.index
-                        }
-                    }
-
-                    // Close button
-                    Button {
-                        id: tabCloseButton
-                        text: !isButton() ? "x" : ""
-                        visible: !isButton()
-                        width: 25
-                        anchors.right: parent.right
-                        contentItem: Text {
-                            anchors.fill: parent
-                            text: tabCloseButton.text
-                            font.family: parent.font.family
-                            font.bold: true
-                            font.capitalization: Font.AllLowercase
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            elide: Text.ElideRight
-                        }
-                        background: Rectangle {
-                            opacity: 0
-                            border.width: 0
-                        }
-                        onClicked: {
-                            queryTabsList.removeTab(styleData.index)
-                        }
-                    }
-
-                    // Bottom line of a selected tab
-                    Rectangle {
-                        width: parent.width
-                        height: 3
-                        anchors.bottom: parent.bottom
-                        color: "#81D4FA"
-                        visible: !isButton() && styleData.selected
+                        property string uid: ''
                     }
                 }
             }
 
-            frame: styleData ? editor : null
+            TabButton {
+                id: tabBtnAdd
+                Material.accent: Material.color(Material.Grey, Material.Shade900)
+                Layout.alignment: Qt.AlignRight
+                text: "+"
+                width: 40
+                font.bold: false
+                font.pixelSize: 20
+                hoverEnabled: false
+                onClicked: newTab()
+            }
         }
 
-        C1.Tab {
-            id: tabAdd
-            title: qsTr("+")
+        StackLayout {
+            id: queryContentList
+            anchors.fill: parent
+            currentIndex: queryTabList.currentIndex
         }
     }
 }

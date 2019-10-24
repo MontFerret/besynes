@@ -8,7 +8,6 @@ Item {
     property string text: ""
 
     id: root
-    anchors.fill: parent
 
     states: [
         State {
@@ -40,31 +39,25 @@ Item {
             rightPadding: 15
             background: Rectangle {
                 anchors.fill: parent
-                color: "#fafafa"
+                color: Material.color(Material.Grey, Material.Shade50)
 
                 Rectangle {
                     width: parent.width
-                    height: 2
+                    height: 1
                     anchors.bottom: parent.bottom
-                    color: "#eeeeee"
+                    color: Material.color(Material.Grey, Material.Shade200)
                 }
             }
 
             RowLayout {
                 anchors.fill: parent
 
-                Label {
-                    text: name
-                    elide: Label.ElideRight
-                    horizontalAlignment: Qt.AlignHCenter
-                    verticalAlignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-                }
-
                 Button {
                     Material.background: Material.Blue
+                    Layout.alignment: Qt.AlignRight
+                    Layout.bottomMargin: 5
                     id: execBtn
-                    text: "Exec"
+                    text: "Run"
                     highlighted: true
                     onClicked: {
                         root.state = "loading"
