@@ -46,8 +46,12 @@ Item {
 
         queryTabList.insertItem(idx, btn)
         insertContentAt(content, idx)
-
         queryTabList.setCurrentIndex(idx)
+
+        // forcing to re-render the Layout
+        // otherwise it fails to scale first rendered item
+        queryContentList.width++
+        queryContentList.width--
     }
 
     function closeTab(target_uid) {
