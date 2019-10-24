@@ -56,6 +56,7 @@ Item {
                     Material.background: Material.Blue
                     Layout.alignment: Qt.AlignRight
                     Layout.bottomMargin: 5
+                    Layout.rightMargin: 5
                     id: execBtn
                     text: "Run"
                     highlighted: true

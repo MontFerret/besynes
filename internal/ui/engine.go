@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"github.com/MontFerret/besynes/internal/ui/controllers"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -10,6 +9,7 @@ import (
 	"github.com/therecipe/qt/qml"
 
 	"github.com/MontFerret/besynes/internal/ui/bridges"
+	"github.com/MontFerret/besynes/internal/ui/controllers"
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
@@ -42,6 +42,7 @@ func (e *Engine) Run() error {
 	e.app.RootContext().SetContextProperty("queryApi", execBridge)
 	e.app.Load(core.NewQUrl3("qrc:/qml/main.qml", 0))
 
+	e.window.SetAttribute(core.Qt__AA_UseHighDpiPixmaps, true)
 	e.window.Exec()
 
 	return nil

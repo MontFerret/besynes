@@ -16,5 +16,7 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     return app.exec();
 }

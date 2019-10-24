@@ -20,8 +20,6 @@ Item {
         const len = children.length
         const new_children = []
 
-        console.log('removing:', idx)
-
         for (let i = 0; i < len; i++) {
             if (i !== idx) {
                 new_children.push(children[i])
@@ -92,24 +90,20 @@ Item {
                     TabButton {
                         property string uid: ''
                         Material.accent: Material.Purple
+                        font.hintingPreference: Font.PreferFullHinting
+                        onHoveredChanged: tabCloseButton.visible = hovered
 
                         Button {
                             id: tabCloseButton
-                            text: "x"
-                            width: 25
                             anchors.right: parent.right
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            anchors.rightMargin: 10
-                            contentItem: Text {
-                                text: tabCloseButton.text
-                                font.family: parent.font.family
-                                font.bold: false
-                                font.pixelSize: 14
-                                font.capitalization: Font.AllLowercase
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                            }
+                            width: 50
+                            height: 50
+                            visible: false
+                            icon.height: 18
+                            icon.width: 18
+                            icon.source: "../../icons/clear.svg"
                             background: Rectangle {
                                 opacity: 0
                                 border.width: 0
@@ -134,10 +128,10 @@ Item {
                 id: tabBtnAdd
                 Material.accent: Material.color(Material.Grey, Material.Shade900)
                 Layout.alignment: Qt.AlignRight
-                text: "+"
-                width: 40
-                font.bold: false
-                font.pixelSize: 20
+                icon.source: "../../icons/add.svg"
+                icon.width: 24
+                icon.height: 24
+                width: 50
                 hoverEnabled: false
                 onClicked: newTab()
             }

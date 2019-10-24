@@ -7,5 +7,7 @@
         <file>components/query/CodeEditor.qml</file>
         <file>components/query/ParamsEditor.qml</file>
         <file>components/query/ResultsView.qml</file>
+        <file>icons/add.svg</file>
+        <file>icons/clear.svg</file>
     </qresource>
 </RCC>
