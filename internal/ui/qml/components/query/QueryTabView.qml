@@ -115,7 +115,7 @@ Item {
 
                 Component {
                     id: tabContent
-                    QueryEditor {
+                    QueryTab {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
