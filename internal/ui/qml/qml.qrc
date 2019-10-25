@@ -9,5 +9,8 @@
         <file>components/query/ResultsView.qml</file>
         <file>icons/add.svg</file>
         <file>icons/clear.svg</file>
+        <file>components/common/Line.qml</file>
+        <file>components/query/PerfView.qml</file>
+        <file>components/common/Statistic.qml</file>
     </qresource>
 </RCC>

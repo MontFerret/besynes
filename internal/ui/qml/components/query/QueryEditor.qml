@@ -11,6 +11,12 @@ Item {
 
     states: [
         State {
+            name: "new"
+            PropertyChanges { target: execBtn; enabled: true }
+            PropertyChanges { target: queryEditor; enabled: true }
+            PropertyChanges { target: spinner; running: false }
+        },
+        State {
             name: "ready"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
@@ -25,7 +31,7 @@ Item {
     ]
 
     Component.onCompleted: {
-        root.state = "ready"
+        root.state = "new"
     }
 
     Page {
@@ -56,7 +62,6 @@ Item {
                     Material.background: Material.Blue
                     Layout.alignment: Qt.AlignRight
                     Layout.bottomMargin: 5
-                    Layout.rightMargin: 5
                     id: execBtn
                     text: "Run"
                     highlighted: true
@@ -67,18 +72,16 @@ Item {
                             // const result
                             queryApi.execute({
                                 text: queryEditor.text
-                            }, (err, result) => {
-                                resultsView.value = {
-                                    data: result,
-                                    error: err
-                                }
+                            }, (result) => {
+                                resultsView.value = result
 
                                 root.state = "ready"
                             })
                         } catch (e) {
                             resultsView.value = {
                                 data: "",
-                                error: e.toString()
+                                error: e.toString(),
+                                stats: {}
                             }
 
                             root.state = "ready"
@@ -89,6 +92,7 @@ Item {
         }
 
         Rectangle {
+            id: pageContent
             anchors.fill: parent
 
             BusyIndicator {
@@ -171,9 +175,11 @@ Item {
                         handle: splitHandle
 
                         Pane {
+                            id: queryPane
                             SplitView.fillWidth: true
                             SplitView.minimumWidth: 200
-                            id: queryPane
+                            padding: 5
+                            leftPadding: 12
 
                             CodeEditor {
                                 id: queryEditor
@@ -183,7 +189,11 @@ Item {
                         }
 
                         Pane {
-                            SplitView.minimumWidth: 150
+                            SplitView.maximumWidth: pageContent.width / 2
+                            SplitView.preferredWidth: 0
+                            SplitView.minimumWidth: 0
+                            padding: 5
+                            rightPadding: 12
 
                             ParamsEditor {
                                 anchors.fill: parent
@@ -194,7 +204,14 @@ Item {
                 }
 
                 Pane {
-                    SplitView.minimumHeight: 150
+                    id: resultsPane
+                    SplitView.maximumHeight: pageContent.height / 2
+                    SplitView.preferredHeight: root.state !== "new" ? 150 : 0
+                    SplitView.minimumHeight: 0
+                    padding: 5
+                    leftPadding: 12
+                    rightPadding: 12
+                    bottomPadding: 12
 
                     ResultsView {
                         id: resultsView

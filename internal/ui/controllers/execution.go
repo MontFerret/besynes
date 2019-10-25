@@ -2,31 +2,34 @@ package controllers
 
 import (
 	"context"
-	"github.com/pkg/errors"
-	"github.com/therecipe/qt/core"
-	"github.com/therecipe/qt/qml"
+	"fmt"
+	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"runtime"
 
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+	"github.com/therecipe/qt/core"
+	"github.com/therecipe/qt/qml"
 
-	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
 type Execution struct {
-	logger  zerolog.Logger
-	service *execution.Service
+	logger   zerolog.Logger
+	jsEngine *qml.QJSEngine
+	service  *execution.Service
 }
 
-func NewExecution(bridge *bridges.Execution, logger zerolog.Logger, service *execution.Service) *Execution {
-	ctl := &Execution{
-		logger:  logger,
-		service: service,
+func NewExecution(logger zerolog.Logger, jsEngine *qml.QJSEngine, service *execution.Service) *Execution {
+	return &Execution{
+		logger:   logger,
+		jsEngine: jsEngine,
+		service:  service,
 	}
+}
 
+func (ctl *Execution) Connect(bridge *bridges.Execution) {
 	bridge.ConnectExecute(ctl.execute)
-
-	return ctl
 }
 
 func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
@@ -56,22 +59,35 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 			}
 		}()
 
-		text := query.Value("text")
+		var text string
 
-		data, err := ctl.service.Execute(context.Background(), execution.Query{
-			Text:       text.ToString(),
+		if query.Contains("text") {
+			text = query.Value("text").ToString()
+		}
+
+		out := ctl.service.Execute(context.Background(), execution.Query{
+			Text:       text,
 			Params:     nil,
 			CDPAddress: "127.0.0.1:9222",
 		})
 
-		args := make([]*qml.QJSValue, 0, 2)
+		jsv := ctl.jsEngine.NewObject()
 
-		if err != nil {
-			args = append(args, qml.NewQJSValue10(err.Error()))
-		} else {
-			args = append(args, qml.NewQJSValue10(""), qml.NewQJSValue10(string(data)))
+		if len(out.Data) > 0 {
+			jsv.SetProperty("data", qml.NewQJSValue8(string(out.Data)))
 		}
 
-		callback.Call(args)
+		if out.Error != nil {
+			jsv.SetProperty("error", qml.NewQJSValue8(out.Error.Error()))
+		}
+
+		jsvStats := ctl.jsEngine.NewObject()
+		jsvStats.SetProperty("compilation", qml.NewQJSValue8(fmt.Sprintf("%d ms", out.Stats.Compilation.Milliseconds())))
+		jsvStats.SetProperty("runtime", qml.NewQJSValue8(fmt.Sprintf("%d ms", out.Stats.Runtime.Milliseconds())))
+		jsvStats.SetProperty("size", qml.NewQJSValue8(fmt.Sprintf("%d kb", len(out.Data)/1000)))
+
+		jsv.SetProperty("stats", jsvStats)
+
+		callback.Call([]*qml.QJSValue{jsv})
 	}()
 }

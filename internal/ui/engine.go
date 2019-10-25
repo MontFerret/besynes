@@ -36,8 +36,8 @@ func New(
 
 func (e *Engine) Run() error {
 	execBridge := bridges.NewExecution(nil)
-
-	_ = controllers.NewExecution(execBridge, e.logger, e.executor)
+	execCtl := controllers.NewExecution(e.logger, e.app.QJSEngine_PTR(), e.executor)
+	execCtl.Connect(execBridge)
 
 	e.app.RootContext().SetContextProperty("queryApi", execBridge)
 	e.app.Load(core.NewQUrl3("qrc:/qml/main.qml", 0))

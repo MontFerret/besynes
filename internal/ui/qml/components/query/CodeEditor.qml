@@ -16,14 +16,14 @@ Item {
 
         TextEdit {
             id: textEditor
+            text: text
             anchors.fill: parent
             padding: 10
             color: "black"
             focus: true
             enabled: root.enabled
-            selectionColor: "green"
-            mouseSelectionMode: TextEdit.SelectWords
-            text: text
+            selectByMouse: true
+            mouseSelectionMode: TextEdit.SelectCharacters
             wrapMode: TextEdit.WrapAnywhere
             onEditingFinished: {
                 root.text = textEditor.text
