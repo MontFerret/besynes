@@ -15,3 +15,12 @@ vendor/
 dist/
 .cache/
 .idea/
+deploy/
+
+build-besynes-Desktop-Default
+
+rcc*
+rcc_.*
+moc.*
+moc_*
+#.qmake.stash
