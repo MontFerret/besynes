@@ -13,31 +13,31 @@ Item {
 
     RowLayout {
         anchors.fill: parent
-        spacing: 10
+        spacing: 12
         visible: root.compile !== "" && root.runtime !== ""
 
         Common.Statistic {
             id: statCompiletime
             name: "compile"
             value: root.compile
-            Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.preferredWidth: root.compile ? root.compile.length : 0
         }
 
         Common.Statistic {
             id: statRuntime
             name: "runtime"
             value: root.runtime
-            Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.preferredWidth: root.runtime ? root.runtime.length : 0
         }
 
         Common.Statistic {
             id: statSize
             name: "size"
             value: root.size
-            Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.preferredWidth: root.size ? root.size.length : 0
         }
     }
 }

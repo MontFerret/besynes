@@ -19,10 +19,10 @@ Item {
             bottomPadding: 0
 
             PerfView {
-                width: 250
-                compile: root.value.stats ? root.value.stats.compilation : ""
-                runtime: root.value.stats ? root.value.stats.runtime : ""
-                size: root.value.stats ? root.value.stats.size : ""
+                width: 300
+                compile: root.value.stats && root.value.stats.compilation ? root.value.stats.compilation : ""
+                runtime: root.value.stats && root.value.stats.runtime ? root.value.stats.runtime : ""
+                size: root.value.stats && root.value.stats.size ? root.value.stats.size : ""
             }
         }
 
@@ -39,9 +39,10 @@ Item {
                 focus: true
                 text: value.error ? value.error : value.data
                 padding: 10
-                wrapMode: TextEdit.WrapAnywhere
+                wrapMode: TextEdit.WordWrap
                 readOnly: true
                 selectByMouse: true
+                selectionColor: Material.color(Material.Purple)
             }
         }
     }

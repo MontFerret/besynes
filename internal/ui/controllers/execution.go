@@ -1,10 +1,14 @@
 package controllers
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/MontFerret/besynes/internal/ui/bridges"
+	"math"
 	"runtime"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -17,6 +21,7 @@ import (
 type Execution struct {
 	logger   zerolog.Logger
 	jsEngine *qml.QJSEngine
+	bridge   *bridges.Execution
 	service  *execution.Service
 }
 
@@ -29,7 +34,12 @@ func NewExecution(logger zerolog.Logger, jsEngine *qml.QJSEngine, service *execu
 }
 
 func (ctl *Execution) Connect(bridge *bridges.Execution) {
-	bridge.ConnectExecute(ctl.execute)
+	if ctl.bridge != nil {
+		ctl.bridge.DisconnectExecute()
+	}
+
+	ctl.bridge = bridge
+	ctl.bridge.ConnectExecute(ctl.execute)
 }
 
 func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
@@ -73,21 +83,52 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 
 		jsv := ctl.jsEngine.NewObject()
 
-		if len(out.Data) > 0 {
-			jsv.SetProperty("data", qml.NewQJSValue8(string(out.Data)))
-		}
+		jsv.SetProperty("data", qml.NewQJSValue8(ctl.formatJSON(out.Data)))
 
 		if out.Error != nil {
 			jsv.SetProperty("error", qml.NewQJSValue8(out.Error.Error()))
 		}
 
 		jsvStats := ctl.jsEngine.NewObject()
-		jsvStats.SetProperty("compilation", qml.NewQJSValue8(fmt.Sprintf("%d ms", out.Stats.Compilation.Milliseconds())))
-		jsvStats.SetProperty("runtime", qml.NewQJSValue8(fmt.Sprintf("%d ms", out.Stats.Runtime.Milliseconds())))
-		jsvStats.SetProperty("size", qml.NewQJSValue8(fmt.Sprintf("%d kb", len(out.Data)/1000)))
+		jsvStats.SetProperty("compilation", qml.NewQJSValue8(ctl.formatDuration(out.Stats.Compilation)))
+		jsvStats.SetProperty("runtime", qml.NewQJSValue8(ctl.formatDuration(out.Stats.Runtime)))
+		jsvStats.SetProperty("size", qml.NewQJSValue8(ctl.formatSize(len(out.Data))))
 
 		jsv.SetProperty("stats", jsvStats)
 
-		callback.Call([]*qml.QJSValue{jsv})
+		// https://github.com/therecipe/qt/issues/994
+		ctl.bridge.RunOnMainHelper(func() {
+			callback.Call([]*qml.QJSValue{jsv})
+		})
 	}()
+}
+
+func (ctl *Execution) formatJSON(data []byte) string {
+	if len(data) == 0 {
+		return ""
+	}
+
+	var b bytes.Buffer
+
+	err := json.Indent(&b, data, "", "  ")
+
+	if err != nil {
+		ctl.logger.Error().Err(err).Msg("failed to format output")
+
+		return string(data)
+	}
+
+	return b.String()
+}
+
+func (ctl *Execution) formatDuration(d time.Duration) string {
+	return fmt.Sprintf("%dms", d.Milliseconds())
+}
+
+func (ctl *Execution) formatSize(sizeInBytes int) string {
+	if sizeInBytes == 0 {
+		return "0kb"
+	}
+
+	return fmt.Sprintf("%fkb", math.Floor(float64(sizeInBytes)/1000))
 }

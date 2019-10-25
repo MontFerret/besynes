@@ -206,7 +206,7 @@ Item {
                 Pane {
                     id: resultsPane
                     SplitView.maximumHeight: pageContent.height / 2
-                    SplitView.preferredHeight: root.state !== "new" ? 150 : 0
+                    SplitView.preferredHeight: root.state !== "new" ? pageContent.height / 2 : 0
                     SplitView.minimumHeight: 0
                     padding: 5
                     leftPadding: 12
