@@ -16,7 +16,7 @@ Item {
         id: codeEditor
         anchors.fill: parent
         text: root.text
-        placeholder: "Type query here..."
+        placeholder: "Query text"
         onEditingFinished: function (text) {
             root.editingFinished(text)
         }

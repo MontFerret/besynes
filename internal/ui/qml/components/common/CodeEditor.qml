@@ -7,6 +7,7 @@ Item {
     property string text: ""
     property bool readOnly: false
     property string placeholder: ""
+    property string color: Material.color(Material.Grey, Material.Shade800)
     signal editingFinished(string text)
 
     id: root
@@ -39,7 +40,8 @@ Item {
             text: text
             enabled: root.enabled
             readOnly: root.readOnly
-            color: Material.color(Material.Grey, Material.Shade800)
+            color: root.color
+            placeholderText: root.placeholder
             selectionColor: Material.color(Material.Purple)
             mouseSelectionMode: TextEdit.SelectCharacters
             focus: true

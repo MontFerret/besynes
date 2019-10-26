@@ -26,24 +26,11 @@ Item {
             }
         }
 
-        Rectangle {
+        Common.CodeEditor {
             anchors.fill: parent
-            border.width: 1
-            border.color: Material.color(Material.Grey, Material.Shade200)
-            radius: 5
-
-            TextEdit {
-                id: results
-                anchors.fill: parent
-                color: value.error ? Material.color(Material.Red) : Material.color(Material.Grey, Material.Shade900)
-                focus: true
-                text: value.error ? value.error : value.data
-                padding: 10
-                wrapMode: TextEdit.WordWrap
-                readOnly: true
-                selectByMouse: true
-                selectionColor: Material.color(Material.Purple)
-            }
+            text: value.error ? value.error : value.data
+            color: value.error ? Material.color(Material.Red) : Material.color(Material.Grey, Material.Shade900)
+            readOnly: true
         }
     }
 }
