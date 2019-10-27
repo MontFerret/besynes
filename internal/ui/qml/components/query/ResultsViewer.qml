@@ -13,6 +13,42 @@ Item {
     Page {
         anchors.fill: parent
 
+        state: {
+            if (!root.value.data && !root.value.error) {
+                return "empty"
+            }
+
+            if (root.value.error) {
+                return "error"
+            }
+
+            return "success"
+        }
+
+        states: [
+            State {
+                name: "empty"
+
+                PropertyChanges { target: perfStats; visible: false }
+                PropertyChanges { target: copyBtn; visible: false }
+                PropertyChanges { target: saveBtn; visible: false }
+            },
+            State {
+                name: "success"
+
+                PropertyChanges { target: perfStats; visible: true }
+                PropertyChanges { target: copyBtn; visible: true }
+                PropertyChanges { target: saveBtn; visible: true }
+            },
+            State {
+                name: "error"
+
+                PropertyChanges { target: perfStats; visible: true }
+                PropertyChanges { target: copyBtn; visible: true }
+                PropertyChanges { target: saveBtn; visible: true }
+            }
+        ]
+
         header: Pane {
             padding: 0
             bottomPadding: 15
@@ -25,9 +61,9 @@ Item {
                     id: perfStats
                     Layout.alignment: Qt.AlignLeft
                     width: 300
-                    compile: root.value.stats && root.value.stats.compilation ? root.value.stats.compilation : ""
-                    runtime: root.value.stats && root.value.stats.runtime ? root.value.stats.runtime : ""
-                    size: root.value.stats && root.value.stats.size ? root.value.stats.size : ""
+                    compile: root.value.stats && root.value.stats.compilation ? root.value.stats.compilation : "0ms"
+                    runtime: root.value.stats && root.value.stats.runtime ? root.value.stats.runtime : "0ms"
+                    size: root.value.stats && root.value.stats.size ? root.value.stats.size : "0kb"
                 }
 
                 Item {
