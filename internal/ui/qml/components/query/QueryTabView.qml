@@ -89,6 +89,7 @@ Item {
 
                     TabButton {
                         property string uid: ''
+                        Material.foreground: Material.color(Material.Grey, Material.Shade700)
                         Material.accent: Material.Purple
                         font.hintingPreference: Font.PreferFullHinting
                         onHoveredChanged: tabCloseButton.visible = hovered
@@ -126,7 +127,8 @@ Item {
 
             TabButton {
                 id: tabBtnAdd
-                Material.accent: Material.color(Material.Grey, Material.Shade900)
+                Material.foreground: Material.color(Material.Grey, Material.Shade700)
+                Material.accent: Material.color(Material.Grey, Material.Shade700)
                 Layout.alignment: Qt.AlignRight
                 icon.source: "../../icons/add.svg"
                 icon.width: 24

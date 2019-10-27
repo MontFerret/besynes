@@ -13,5 +13,7 @@
         <file>components/query/PerfView.qml</file>
         <file>components/common/Statistic.qml</file>
         <file>components/common/CodeEditor.qml</file>
+        <file>icons/copy.svg</file>
+        <file>icons/save.svg</file>
     </qresource>
 </RCC>

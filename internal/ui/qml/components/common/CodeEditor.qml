@@ -9,6 +9,11 @@ Item {
     property string placeholder: ""
     property string color: Material.color(Material.Grey, Material.Shade900)
     signal editingFinished(string text)
+    readonly property var copy: () => {
+        editor.selectAll()
+        editor.copy()
+        editor.deselect()
+    }
 
     id: root
     anchors.fill: parent
