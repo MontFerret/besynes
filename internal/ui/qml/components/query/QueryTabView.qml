@@ -15,73 +15,43 @@ Item {
         property int counter: 0
     }
 
-    function insertContentAt(item, idx) {
-        const children = queryContentList.children
-        const current = children[idx]
-        children.push(item)
-        children[idx] = item
-        children[children.length -1] = current
-    }
-
-    function removeContentAt(idx) {
-        const children = queryContentList.children
-        const len = children.length
-        const new_children = []
-
-        for (let i = 0; i < len; i++) {
-            if (i !== idx) {
-                new_children.push(children[i])
-            }
-        }
-
-        queryContentList.children = new_children
-    }
-
     function newTab() {
         state.counter += 1
-        const tabs_count = queryTabList.count
-        const idx = tabs_count
         const uid = `query_${state.counter}`
         const name = `UNTITLED QUERY ${state.counter}`
 
-        const btn = tabBtn.createObject(queryTabList, {
+        tabListModel.append({
             uid: uid,
-            text: name
+            name: name,
+            text: "",
         })
-        const content = tabContent.createObject(queryContentList, {
-            uid: uid,
-            name: name
-        })
-
-        queryTabList.insertItem(idx, btn)
-        insertContentAt(content, idx)
-        queryTabList.setCurrentIndex(idx)
 
         // forcing to re-render the Layout
         // otherwise it fails to scale first rendered item
         queryContentList.width++
         queryContentList.width--
+
+        queryTabBar.setCurrentIndex(tabListModel.count - 1)
     }
 
     function closeTab(target_uid) {
-        const len = queryTabList.count
+        const len = tabListModel.count
         let idx = -1
-        let current_item;
 
-        for (var i = 0; i < len; ++i) {
-            current_item = queryTabList.itemAt(i)
-
-            if (current_item.uid === target_uid) {
+        for (let i = 0; i < len; i += 1) {
+            if (tabListModel.get(i).uid === target_uid) {
                 idx = i
                 break
             }
         }
 
         if (idx > -1) {
-            queryTabList.removeItem(current_item)
-            removeContentAt(idx)
-            queryTabList.setCurrentIndex(idx)
+            tabListModel.remove(idx)
         }
+    }
+
+    ListModel {
+        id: tabListModel
     }
 
     Page {
@@ -91,15 +61,14 @@ Item {
             spacing: 0
 
             TabBar {
-                id: queryTabList
+                id: queryTabBar
                 Layout.fillWidth: true
                 Material.accent: Material.Purple
 
-                Component {
-                    id: tabBtn
-
-                    TabButton {
-                        property string uid: ''
+                Repeater {
+                    model: tabListModel
+                    delegate: TabButton {
+                        text: name
                         Material.foreground: Material.color(Material.Grey, Material.Shade700)
                         Material.accent: Material.Purple
                         font.hintingPreference: Font.PreferFullHinting
@@ -120,22 +89,7 @@ Item {
                                 opacity: 0
                                 border.width: 0
                             }
-                            onClicked: closeTab(this.parent.uid)
-                        }
-                    }
-                }
-
-                Component {
-                    id: tabContent
-                    QueryTab {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-
-                        property string uid: ''
-                        onSaveResult: (data) => {
-                            if (root.saveResult && data) {
-                                root.saveResult(this.name, data)
-                            }
+                            onClicked: closeTab(uid)
                         }
                     }
                 }
@@ -158,7 +112,22 @@ Item {
         StackLayout {
             id: queryContentList
             anchors.fill: parent
-            currentIndex: queryTabList.currentIndex
+            currentIndex: queryTabBar.currentIndex
+
+            Repeater {
+                model: tabListModel
+                delegate: QueryTab {
+                    name: name
+                    text: text
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    onSaveResult: (data) => {
+                        if (root.saveResult && data) {
+                            root.saveResult(this.name, data)
+                        }
+                    }
+                }
+            }
         }
     }
 }
