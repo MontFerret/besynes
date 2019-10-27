@@ -2,6 +2,7 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
+import Qt.labs.platform 1.1
 import "./components/query"
 
 ApplicationWindow {
@@ -34,7 +35,20 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a file"
+        fileMode: FileDialog.SaveFile
+        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+    }
+
     QueryTabView {
         id: tabs
+        onSaveResult: (query, data) => {
+            const fileName = `${query}.json`
+            fileDialog.title = "Save query results"
+            fileDialog.currentFile = fileName
+            fileDialog.open()
+        }
     }
 }

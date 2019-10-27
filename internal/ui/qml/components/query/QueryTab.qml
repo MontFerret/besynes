@@ -6,6 +6,7 @@ import QtQuick.Controls.Material 2.13
 Item {
     property string name: "UNTITLED QUERY"
     property string text: ""
+    signal saveResult(string data)
 
     id: root
 
@@ -238,6 +239,11 @@ Item {
                     ResultsViewer {
                         id: resultsView
                         anchors.fill: parent
+                        onSave: (data) => {
+                            if(data && root.saveResult) {
+                                root.saveResult(data)
+                            }
+                        }
                     }
                 }
             }

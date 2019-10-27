@@ -8,6 +8,7 @@ Item {
     id: root
 
     property var value: ({ data: "", error: "", stats: { compilation: "", runtime: "", size: "" } })
+    signal save(string text)
 
     Page {
         anchors.fill: parent
@@ -45,6 +46,11 @@ Item {
                     icon.height: 20
                     antialiasing: true
                     icon.source: `../../icons/save.svg`
+                    onClicked: {
+                        if (root.save) {
+                            root.save(viewer.text)
+                        }
+                    }
                 }
             }
         }

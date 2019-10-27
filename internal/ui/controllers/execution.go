@@ -78,7 +78,7 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 		out := ctl.service.Execute(context.Background(), execution.Query{
 			Text:       text,
 			Params:     nil,
-			CDPAddress: "127.0.0.1:9222",
+			CDPAddress: "http://127.0.0.1:9222",
 		})
 
 		jsv := ctl.jsEngine.NewObject()

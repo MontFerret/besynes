@@ -5,7 +5,15 @@ import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls.Material 2.13
 
 Item {
+    signal saveResult(string query, string data)
+
+    id: root
     anchors.fill: parent
+
+    QtObject {
+        id: state
+        property int counter: 0
+    }
 
     function insertContentAt(item, idx) {
         const children = queryContentList.children
@@ -30,16 +38,19 @@ Item {
     }
 
     function newTab() {
+        state.counter += 1
         const tabs_count = queryTabList.count
         const idx = tabs_count
-        const id = `query_${Math.random().toString()}`
+        const uid = `query_${state.counter}`
+        const name = `UNTITLED QUERY ${state.counter}`
 
         const btn = tabBtn.createObject(queryTabList, {
-            uid: id,
-            text: `UNTITLED QUERY ${tabs_count + 1}`
+            uid: uid,
+            text: name
         })
         const content = tabContent.createObject(queryContentList, {
-            uid: id
+            uid: uid,
+            name: name
         })
 
         queryTabList.insertItem(idx, btn)
@@ -121,6 +132,11 @@ Item {
                         Layout.fillHeight: true
 
                         property string uid: ''
+                        onSaveResult: (data) => {
+                            if (root.saveResult && data) {
+                                root.saveResult(this.name, data)
+                            }
+                        }
                     }
                 }
             }
