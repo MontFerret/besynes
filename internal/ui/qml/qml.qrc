@@ -2,19 +2,18 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>components/query/QueryTab.qml</file>
-        <file>components/query/QueryTabView.qml</file>
+        <file>components/query/Tab.qml</file>
+        <file>components/query/TabView.qml</file>
         <file>components/query/QueryEditor.qml</file>
         <file>components/query/ParamsEditor.qml</file>
         <file>components/query/ResultsViewer.qml</file>
         <file>icons/add.svg</file>
         <file>icons/clear.svg</file>
         <file>components/common/Line.qml</file>
-        <file>components/query/PerfView.qml</file>
+        <file>components/query/PerfViewer.qml</file>
         <file>components/common/Statistic.qml</file>
         <file>components/common/CodeEditor.qml</file>
         <file>icons/copy.svg</file>
         <file>icons/save.svg</file>
-        <file>models/QueryTabList.qml</file>
     </qresource>
 </RCC>

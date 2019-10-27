@@ -3,7 +3,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
 import Qt.labs.platform 1.1
-import "./components/query"
+import "./components/query" as Query
 
 ApplicationWindow {
     id: win
@@ -42,7 +42,7 @@ ApplicationWindow {
         folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
     }
 
-    QueryTabView {
+    Query.TabView {
         id: tabs
         onSaveResult: (query, data) => {
             const fileName = `${query}.json`

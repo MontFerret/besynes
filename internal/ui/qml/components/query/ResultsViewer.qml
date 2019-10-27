@@ -14,10 +14,15 @@ Item {
         anchors.fill: parent
 
         header: Pane {
+            padding: 0
+            bottomPadding: 15
+
             RowLayout {
                 anchors.fill: parent
+                spacing: 0
 
-                PerfView {
+                PerfViewer {
+                    id: perfStats
                     Layout.alignment: Qt.AlignLeft
                     width: 300
                     compile: root.value.stats && root.value.stats.compilation ? root.value.stats.compilation : ""
@@ -25,30 +30,40 @@ Item {
                     size: root.value.stats && root.value.stats.size ? root.value.stats.size : ""
                 }
 
-                TabButton {
-                    Layout.alignment: Qt.AlignTrailing
-                    Material.foreground: Material.color(Material.Grey, Material.Shade700)
-                    Material.accent: Material.color(Material.Grey, Material.Shade700)
-                    icon.width: 20
-                    icon.height: 20
-                    antialiasing: true
-                    icon.source: `../../icons/copy.svg`
-                    onClicked: {
-                        viewer.copy()
-                    }
-                }
-
-                TabButton {
+                Item {
                     Layout.alignment: Qt.AlignRight
-                    Material.foreground: Material.color(Material.Grey, Material.Shade700)
-                    Material.accent: Material.color(Material.Grey, Material.Shade700)
-                    icon.width: 20
-                    icon.height: 20
-                    antialiasing: true
-                    icon.source: `../../icons/save.svg`
-                    onClicked: {
-                        if (root.save) {
-                            root.save(viewer.text)
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: copyBtn.width + saveBtn.width
+                    Layout.fillHeight: true
+                    Layout.preferredHeight: copyBtn.height
+
+                    TabButton {
+                        id: copyBtn
+                        anchors.right: saveBtn.left
+                        Material.foreground: Material.color(Material.Grey, Material.Shade700)
+                        Material.accent: Material.color(Material.Grey, Material.Shade700)
+                        icon.width: 20
+                        icon.height: 20
+                        antialiasing: true
+                        icon.source: `../../icons/copy.svg`
+                        onClicked: {
+                            viewer.copy()
+                        }
+                    }
+
+                    TabButton {
+                        id: saveBtn
+                        anchors.right: parent.right
+                        Material.foreground: Material.color(Material.Grey, Material.Shade700)
+                        Material.accent: Material.color(Material.Grey, Material.Shade700)
+                        icon.width: 20
+                        icon.height: 20
+                        antialiasing: true
+                        icon.source: `../../icons/save.svg`
+                        onClicked: {
+                            if (root.save) {
+                                root.save(viewer.text)
+                            }
                         }
                     }
                 }

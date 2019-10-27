@@ -116,7 +116,7 @@ Item {
 
             Repeater {
                 model: tabListModel
-                delegate: QueryTab {
+                delegate: Tab {
                     name: name
                     text: text
                     Layout.fillWidth: true
