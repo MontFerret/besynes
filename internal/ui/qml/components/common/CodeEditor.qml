@@ -7,7 +7,7 @@ Item {
     property string text: ""
     property bool readOnly: false
     property string placeholder: ""
-    property string color: Material.color(Material.Grey, Material.Shade800)
+    property string color: Material.color(Material.Grey, Material.Shade900)
     signal editingFinished(string text)
 
     id: root
@@ -19,6 +19,15 @@ Item {
 
         anchors.fill: parent
         clip: true
+
+//        Rectangle {
+//            // Layout.preferredWidth: 20
+//            // Layout.fillHeight: true
+//            //Layout.preferredHeight: 10
+//            height: 100
+//            width: 30
+//            color: Material.color(Material.Grey, Material.Shade100)
+//        }
 
 //        Column {
 //            Repeater {
@@ -37,7 +46,7 @@ Item {
             Layout.fillHeight: true
             Layout.fillWidth: true
             id: editor
-            text: text
+            text: root.text
             enabled: root.enabled
             readOnly: root.readOnly
             color: root.color
@@ -48,6 +57,7 @@ Item {
             selectByMouse: true
             wrapMode: TextEdit.WordWrap
             padding: 5
+            font.pixelSize: 14
             background: Rectangle {
                 width: parent.width
                 height: parent.height
