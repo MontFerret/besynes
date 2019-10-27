@@ -1,6 +1,6 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
-import QtQuick.Controls 2.5 as C25
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.13
 import "../common" as Common
@@ -17,19 +17,25 @@ Item {
             name: "new"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
-            PropertyChanges { target: spinner; visible: false }
+            PropertyChanges { target: paramsEditor; enabled: true }
+            PropertyChanges { target: resultsViewer; enabled: true }
+            PropertyChanges { target: progress; visible: false }
         },
         State {
             name: "ready"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
-            PropertyChanges { target: spinner; visible: false }
+            PropertyChanges { target: paramsEditor; enabled: true }
+            PropertyChanges { target: resultsViewer; enabled: true }
+            PropertyChanges { target: progress; visible: false }
         },
         State {
             name: "loading"
             PropertyChanges { target: execBtn; enabled: false }
             PropertyChanges { target: queryEditor; enabled: false }
-            PropertyChanges { target: spinner; visible: true }
+            PropertyChanges { target: paramsEditor; enabled: false }
+            PropertyChanges { target: resultsViewer; enabled: false }
+            PropertyChanges { target: progress; visible: true }
         }
     ]
 
@@ -40,10 +46,6 @@ Item {
     QtObject {
         id: query
         property string text: ""
-    }
-
-    Common.Loader {
-        id: spinner
     }
 
     Page {
@@ -65,13 +67,21 @@ Item {
                     anchors.bottom: parent.bottom
                     color: Material.color(Material.Grey, Material.Shade200)
                 }
+
+                ProgressBar {
+                    id: progress
+                    Material.accent: Material.color(Material.Indigo, Material.Shade800)
+                    anchors.bottom: parent.bottom
+                    width: parent.width
+                    indeterminate: true
+                }
             }
 
             RowLayout {
                 anchors.fill: parent
 
                 Button {
-                    Material.background: Material.Blue
+                    Material.background: Material.Indigo
                     Layout.alignment: Qt.AlignRight
                     Layout.bottomMargin: 5
                     id: execBtn
@@ -81,7 +91,7 @@ Item {
                         // if true, we in QtCreator
                         if (typeof queryApi === "undefined") {
                             root.state = "loading"
-                            resultsView.value = {
+                            resultsViewer.value = {
                                 data: query.text,
                                 error: ""
                             }
@@ -97,12 +107,12 @@ Item {
                             queryApi.execute({
                                 text: query.text
                             }, (result) => {
-                                resultsView.value = result
+                                resultsViewer.value = result
 
                                 root.state = "ready"
                             })
                         } catch (e) {
-                            resultsView.value = {
+                            resultsViewer.value = {
                                 data: "",
                                 error: e.toString(),
                                 stats: {}
@@ -236,7 +246,7 @@ Item {
                     bottomPadding: 12
 
                     ResultsViewer {
-                        id: resultsView
+                        id: resultsViewer
                         anchors.fill: parent
                         onSave: (data) => {
                             if(data && root.saveResult) {

@@ -25,28 +25,6 @@ Item {
         anchors.fill: parent
         clip: true
 
-//        Rectangle {
-//            // Layout.preferredWidth: 20
-//            // Layout.fillHeight: true
-//            //Layout.preferredHeight: 10
-//            height: 100
-//            width: 30
-//            color: Material.color(Material.Grey, Material.Shade100)
-//        }
-
-//        Column {
-//            Repeater {
-//                id: lineCountRepeater
-//                model: editor.lineCount
-//                delegate: Rectangle {
-//                    width: 10
-//                    height: 20
-//                    border.width: 1
-//                    color: "yellow"
-//                }
-//            }
-//        }
-
         TextArea {
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -69,7 +47,7 @@ Item {
                 border.width: 1
                 border.color: Material.color(Material.Grey, Material.Shade200)
                 radius: 5
-                color: "white"
+                color: root.enabled ? "white" : Material.color(Material.Grey, Material.Shade100)
             }
             onEditingFinished: root.editingFinished(editor.text)
         }

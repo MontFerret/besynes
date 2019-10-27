@@ -6,7 +6,6 @@ import "../common" as Common
 
 Item {
     property string text: qsTr("")
-    property bool enabled: true
     signal editingFinished(string text)
 
     id: root
@@ -17,7 +16,8 @@ Item {
         anchors.fill: parent
         text: root.text
         placeholder: "Query text"
-        readOnly: !enabled
+        readOnly: !root.enabled
+        enabled: root.enabled
         onEditingFinished: function (text) {
             root.editingFinished(text)
         }

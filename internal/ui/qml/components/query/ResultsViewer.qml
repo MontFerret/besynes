@@ -112,6 +112,7 @@ Item {
             text: value.error ? value.error : value.data
             color: value.error ? Material.color(Material.Red) : Material.color(Material.Grey, Material.Shade900)
             readOnly: true
+            enabled: root.enabled
         }
     }
 }

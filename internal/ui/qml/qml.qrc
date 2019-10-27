@@ -18,5 +18,7 @@
         <file>icons/settings.svg</file>
         <file>components/settings/Dialog.qml</file>
         <file>components/common/Loader.qml</file>
+        <file>components/common/Dialog.qml</file>
+        <file>components/common/Paper.qml</file>
     </qresource>
 </RCC>

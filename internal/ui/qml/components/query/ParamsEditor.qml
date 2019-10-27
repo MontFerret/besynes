@@ -10,5 +10,7 @@ Item {
         anchors.fill: parent
         text: root.values
         placeholder: "Parameter values"
+        enabled: root.enabled
+        readOnly: !root.enabled
     }
 }
