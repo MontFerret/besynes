@@ -15,5 +15,8 @@
         <file>components/common/CodeEditor.qml</file>
         <file>icons/copy.svg</file>
         <file>icons/save.svg</file>
+        <file>icons/settings.svg</file>
+        <file>components/settings/Dialog.qml</file>
+        <file>components/common/Loader.qml</file>
     </qresource>
 </RCC>

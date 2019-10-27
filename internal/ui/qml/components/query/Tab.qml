@@ -1,7 +1,9 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
+import QtQuick.Controls 2.5 as C25
 import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.13
+import "../common" as Common
 
 Item {
     property string name: "UNTITLED QUERY"
@@ -15,19 +17,19 @@ Item {
             name: "new"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
-            PropertyChanges { target: spinner; running: false }
+            PropertyChanges { target: spinner; visible: false }
         },
         State {
             name: "ready"
             PropertyChanges { target: execBtn; enabled: true }
             PropertyChanges { target: queryEditor; enabled: true }
-            PropertyChanges { target: spinner; running: false }
+            PropertyChanges { target: spinner; visible: false }
         },
         State {
             name: "loading"
             PropertyChanges { target: execBtn; enabled: false }
             PropertyChanges { target: queryEditor; enabled: false }
-            PropertyChanges { target: spinner; running: true }
+            PropertyChanges { target: spinner; visible: true }
         }
     ]
 
@@ -38,6 +40,10 @@ Item {
     QtObject {
         id: query
         property string text: ""
+    }
+
+    Common.Loader {
+        id: spinner
     }
 
     Page {
@@ -112,13 +118,6 @@ Item {
         Rectangle {
             id: pageContent
             anchors.fill: parent
-
-            BusyIndicator {
-                id: spinner
-                anchors.centerIn: parent
-                running: false
-                z: 90
-            }
 
             Component {
                 id: splitHandle

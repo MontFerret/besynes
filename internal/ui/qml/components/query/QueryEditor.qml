@@ -17,6 +17,7 @@ Item {
         anchors.fill: parent
         text: root.text
         placeholder: "Query text"
+        readOnly: !enabled
         onEditingFinished: function (text) {
             root.editingFinished(text)
         }

@@ -2,8 +2,9 @@ import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
-import Qt.labs.platform 1.1
+import Qt.labs.platform 1.1 as Labs
 import "./components/query" as Query
+import "./components/settings" as Settings
 
 ApplicationWindow {
     id: win
@@ -11,6 +12,12 @@ ApplicationWindow {
     width: 1024
     height: 768
     title: "Besynes"
+
+    QtObject {
+        id: settingsModel
+
+        property string cdpAddress: "http://127.0.0.1:9222"
+    }
 
     header: ToolBar {
         Material.background: Material.DeepPurple
@@ -27,6 +34,15 @@ ApplicationWindow {
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
             }
+
+            TabButton {
+                icon.source: "./icons/settings.svg"
+                Material.foreground: "white"
+                Material.accent: "white"
+                onClicked: {
+                    settingsDialog.open()
+                }
+            }
         }
     }
 
@@ -35,11 +51,15 @@ ApplicationWindow {
         anchors.fill: parent
     }
 
-    FileDialog {
+    Labs.FileDialog {
         id: fileDialog
         title: "Please choose a file"
-        fileMode: FileDialog.SaveFile
-        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
+        fileMode: Labs.FileDialog.SaveFile
+        folder: Labs.StandardPaths.writableLocation(Labs.StandardPaths.DocumentsLocation)
+    }
+
+    Settings.Dialog {
+        id: settingsDialog
     }
 
     Query.TabView {
