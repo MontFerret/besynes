@@ -17,3 +17,6 @@ install:
 
 generate:
 	qtmoc desktop
+
+setup: install generate
+	qtesetup -test=false
