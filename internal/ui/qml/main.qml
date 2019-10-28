@@ -27,15 +27,36 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
-            Label {
-                text: "BESYNES"
-                elide: Label.ElideRight
-                horizontalAlignment: Qt.AlignLeft
-                verticalAlignment: Qt.AlignVCenter
-                Layout.fillWidth: true
+            Rectangle {
+                Layout.alignment: Qt.AlignLeft
+
+                Image {
+                    id: logoImg
+                    source: "./images/logo.png"
+                    width: 50
+                    height: 50
+                    antialiasing: true
+
+                    RotationAnimator {
+                        id: logoImgAnimation
+                        target: logoImg;
+                        from: 0;
+                        to: 360;
+                        duration: 500
+                        running: false
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: {
+                            logoImgAnimation.running = true
+                        }
+                    }
+                }
             }
 
             TabButton {
+                Layout.alignment: Qt.AlignRight
                 icon.source: "./icons/settings.svg"
                 Material.foreground: "white"
                 Material.accent: "white"

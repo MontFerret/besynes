@@ -70,6 +70,8 @@ github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJy
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/therecipe/qt v0.0.0-20191015155015-04913862338b h1:qT3+Y6rp785To3qWdWZSdPOvS1qCpqHwAehSONodSu8=
 github.com/therecipe/qt v0.0.0-20191015155015-04913862338b/go.mod h1:SUUR2j3aE1z6/g76SdD6NwACEpvCxb3fvG82eKbD6us=
+github.com/therecipe/qt/internal/binding/files/docs/5.13.0 v0.0.0-20191022233421-590f404884c9 h1:49q1XpD1CePX6XzqtTg8V5uXOyb1l8YBwMrm1J34NNA=
+github.com/therecipe/qt/internal/binding/files/docs/5.13.0 v0.0.0-20191022233421-590f404884c9/go.mod h1:mH55Ek7AZcdns5KPp99O0bg+78el64YCYWHiQKrOdt4=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasttemplate v1.0.1/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=

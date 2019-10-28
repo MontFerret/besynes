@@ -20,5 +20,6 @@
         <file>components/common/Loader.qml</file>
         <file>components/common/Dialog.qml</file>
         <file>components/common/Paper.qml</file>
+        <file>images/logo.png</file>
     </qresource>
 </RCC>

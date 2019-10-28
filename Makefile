@@ -9,7 +9,7 @@ start:
 	qtdeploy -fast test desktop
 
 build:
-	qtdeploy -fast build desktop
+	qtdeploy build desktop
 
 install:
 	go mod vendor && go mod tidy && \
