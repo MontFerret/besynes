@@ -9,9 +9,11 @@ The project is in its early stage of development, therefore the only way to run 
 
 ### Source
 
-- make install
-- make generate
-- make build
+```bash
+$ git clone https://github.com/MontFerret/besynes.git
+$ cd besynes
+$ make setup
+```
 
 #### Dev dependencies
 
