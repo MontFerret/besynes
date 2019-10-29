@@ -5,16 +5,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/MontFerret/besynes/internal/ui/bridges"
-	"math"
 	"runtime"
 	"time"
 
+	"github.com/cloudfoundry/bytefmt"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/qml"
 
+	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
@@ -126,9 +126,5 @@ func (ctl *Execution) formatDuration(d time.Duration) string {
 }
 
 func (ctl *Execution) formatSize(sizeInBytes int) string {
-	if sizeInBytes == 0 {
-		return "0kb"
-	}
-
-	return fmt.Sprintf("%fkb", math.Floor(float64(sizeInBytes)/1000))
+	return bytefmt.ByteSize(uint64(sizeInBytes))
 }
