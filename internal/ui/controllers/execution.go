@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"runtime"
 	"time"
 
@@ -122,7 +121,7 @@ func (ctl *Execution) formatJSON(data []byte) string {
 }
 
 func (ctl *Execution) formatDuration(d time.Duration) string {
-	return fmt.Sprintf("%dms", d.Milliseconds())
+	return d.String()
 }
 
 func (ctl *Execution) formatSize(sizeInBytes int) string {
