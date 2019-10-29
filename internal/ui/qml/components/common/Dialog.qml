@@ -17,6 +17,7 @@ Dialog {
         }
     }
 
+
     background: Rectangle {
         color: Material.color(Material.Grey, Material.Shade200)
     }

@@ -7,30 +7,42 @@ import "../common" as Common
 Common.Dialog {
     id: root
     title: "Settings"
-    standardButtons: Dialog.Cancel | Dialog.Save
     anchors.centerIn: parent
-    width: 600
-    height: 300
+    width: 400
+    height: 200
+    padding: 15
 
-    ColumnLayout {
+    GridLayout {
         anchors.fill: parent
+        columns: 1
 
-        Item {
-            Layout.fillWidth: true
+        GeneralForm {
             Layout.fillHeight: true
+            Layout.fillWidth: true
+        }
+    }
 
-            Label {
-                text: "General"
+    RowLayout {
+        width: parent.width
+        anchors.bottom: parent.bottom
+
+        Button {
+            Layout.alignment: Qt.AlignLeft
+            Material.background: Material.color(Material.Grey, Material.Shade300)
+            Material.foreground: Material.color(Material.Grey, Material.Shade900)
+            text: "Cancel"
+            onClicked: {
+                root.reject()
             }
+        }
 
-            Common.Paper {
-                RowLayout {
-                    Label {
-                        text: "CDP address"
-                    }
-
-                    TextInput {}
-                }
+        Button {
+            Layout.alignment: Qt.AlignRight
+            Material.background: Material.Indigo
+            Material.foreground: Material.color(Material.Grey, Material.Shade50)
+            text: "Save"
+            onClicked: {
+                root.accept()
             }
         }
     }

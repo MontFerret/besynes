@@ -39,7 +39,7 @@ Item {
             focus: true
             selectByMouse: true
             wrapMode: TextEdit.WordWrap
-            padding: 5
+            padding: 8
             font.pixelSize: 14
             background: Rectangle {
                 width: parent.width

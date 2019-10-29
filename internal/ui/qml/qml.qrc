@@ -21,5 +21,7 @@
         <file>components/common/Dialog.qml</file>
         <file>components/common/Paper.qml</file>
         <file>images/logo.png</file>
+        <file>components/settings/GeneralForm.qml</file>
+        <file>components/common/forms/TextInput.qml</file>
     </qresource>
 </RCC>
