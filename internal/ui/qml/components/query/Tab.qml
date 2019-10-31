@@ -46,6 +46,7 @@ Item {
     QtObject {
         id: query
         property string text: ""
+        property string params: ""
     }
 
     Page {
@@ -105,7 +106,8 @@ Item {
                         try {
                             // const result
                             queryApi.execute({
-                                text: query.text
+                                text: query.text,
+                                params: query.params,
                             }, (result) => {
                                 resultsViewer.value = result
 
@@ -214,9 +216,7 @@ Item {
                                 id: queryEditor
                                 anchors.fill: parent
                                 text: text
-                                onEditingFinished: (text) => {
-                                    query.text = text
-                                }
+                                onEditingFinished: text => query.text = text
                             }
                         }
 
@@ -230,6 +230,7 @@ Item {
                             ParamsEditor {
                                 anchors.fill: parent
                                 id: paramsEditor
+                                onEditingFinished: text => query.params = text
                             }
                         }
                     }

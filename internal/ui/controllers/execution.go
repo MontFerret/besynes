@@ -17,6 +17,8 @@ import (
 	"github.com/MontFerret/besynes/pkg/execution"
 )
 
+var ErrInvalidParams = errors.New("Invalid parameter values. Use valid JSON object.")
+
 type Execution struct {
 	logger   zerolog.Logger
 	jsEngine *qml.QJSEngine
@@ -68,17 +70,21 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 			}
 		}()
 
-		var text string
+		q, err := ctl.parseQuery(query)
 
-		if query.Contains("text") {
-			text = query.Value("text").ToString()
+		if err != nil {
+			jsv := ctl.jsEngine.NewObject()
+			jsv.SetProperty("error", qml.NewQJSValue8(err.Error()))
+
+			// https://github.com/therecipe/qt/issues/994
+			ctl.bridge.RunOnMainHelper(func() {
+				callback.Call([]*qml.QJSValue{jsv})
+			})
+
+			return
 		}
 
-		out := ctl.service.Execute(context.Background(), execution.Query{
-			Text:       text,
-			Params:     nil,
-			CDPAddress: "http://127.0.0.1:9222",
-		})
+		out := ctl.service.Execute(context.Background(), q)
 
 		jsv := ctl.jsEngine.NewObject()
 
@@ -102,6 +108,41 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 	}()
 }
 
+func (ctl *Execution) parseQuery(query *core.QJsonObject) (execution.Query, error) {
+	var text string
+	var params map[string]interface{}
+
+	if query.Contains("text") {
+		text = query.Value("text").ToString()
+	}
+
+	if query.Contains("params") {
+		paramsBytes := []byte(query.Value("params").ToString())
+
+		// Make sure that params string is not empty
+		if !ctl.isParamsEmpty(paramsBytes) {
+			// Check if it's an object
+			if !ctl.isParamsObjectValid(paramsBytes) {
+				return execution.Query{}, ErrInvalidParams
+			}
+
+			params = make(map[string]interface{})
+
+			err := json.Unmarshal(paramsBytes, &params)
+
+			if err != nil {
+				return execution.Query{}, ErrInvalidParams
+			}
+		}
+	}
+
+	return execution.Query{
+		Text:       text,
+		Params:     params,
+		CDPAddress: "http://127.0.0.1:9222",
+	}, nil
+}
+
 func (ctl *Execution) formatJSON(data []byte) string {
 	if len(data) == 0 {
 		return ""
@@ -118,6 +159,18 @@ func (ctl *Execution) formatJSON(data []byte) string {
 	}
 
 	return b.String()
+}
+
+func (ctl *Execution) isParamsEmpty(text []byte) bool {
+	return len(text) <= 2
+}
+
+func (ctl *Execution) isParamsObjectValid(text []byte) bool {
+	if len(text) < 2 {
+		return false
+	}
+
+	return string(text[0:1]) == "{" && string(text[len(text)-1:]) == "}"
 }
 
 func (ctl *Execution) formatDuration(d time.Duration) string {

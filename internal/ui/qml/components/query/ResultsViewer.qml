@@ -9,6 +9,12 @@ Item {
 
     property var value: ({ data: "", error: "", stats: { compilation: "", runtime: "", size: "" } })
     signal save(string text)
+    property var clear: () => {
+        perfStats.compile = ""
+        perfStats.runtime = ""
+        perfStats.size = ""
+        viewer.text = ""
+    }
 
     Page {
         anchors.fill: parent
