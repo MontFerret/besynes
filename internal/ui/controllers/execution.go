@@ -15,6 +15,7 @@ import (
 
 	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"github.com/MontFerret/besynes/pkg/execution"
+	"github.com/MontFerret/besynes/pkg/settings"
 )
 
 var ErrInvalidParams = errors.New("Invalid parameter values. Use valid JSON object.")
@@ -23,14 +24,21 @@ type Execution struct {
 	logger   zerolog.Logger
 	jsEngine *qml.QJSEngine
 	bridge   *bridges.Execution
-	service  *execution.Service
+	settings *settings.Service
+	executor *execution.Executor
 }
 
-func NewExecution(logger zerolog.Logger, jsEngine *qml.QJSEngine, service *execution.Service) *Execution {
+func NewExecution(
+	logger zerolog.Logger,
+	jsEngine *qml.QJSEngine,
+	settingsSvc *settings.Service,
+	executor *execution.Executor,
+) *Execution {
 	return &Execution{
 		logger:   logger,
 		jsEngine: jsEngine,
-		service:  service,
+		settings: settingsSvc,
+		executor: executor,
 	}
 }
 
@@ -84,7 +92,7 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 			return
 		}
 
-		out := ctl.service.Execute(context.Background(), q)
+		out := ctl.executor.Execute(context.Background(), q)
 
 		jsv := ctl.jsEngine.NewObject()
 
@@ -136,10 +144,12 @@ func (ctl *Execution) parseQuery(query *core.QJsonObject) (execution.Query, erro
 		}
 	}
 
+	opts := ctl.settings.Get()
+
 	return execution.Query{
 		Text:       text,
 		Params:     params,
-		CDPAddress: "http://127.0.0.1:9222",
+		CDPAddress: opts.CDPAddress,
 	}, nil
 }
 

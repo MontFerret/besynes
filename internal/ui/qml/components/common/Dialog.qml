@@ -4,6 +4,8 @@ import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
 
 Dialog {
+    property bool loading: false
+
     id: root
     modal: true
 
@@ -14,6 +16,18 @@ Dialog {
             text: root.title
             anchors.centerIn: parent
             color: "white"
+        }
+
+        Control {
+            anchors.bottom: parent.bottom
+            width: parent.width
+
+            ProgressBar {
+                Material.accent: Material.color(Material.Indigo, Material.Shade800)
+                width: parent.width
+                indeterminate: true
+                visible: root.loading
+            }
         }
     }
 

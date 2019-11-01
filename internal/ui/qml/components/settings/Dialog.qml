@@ -4,45 +4,137 @@ import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
 import "../common" as Common
 
-Common.Dialog {
+Item {
+    readonly property var open: () => {
+        dialog.open()
+    }
+
     id: root
-    title: "Settings"
-    anchors.centerIn: parent
     width: 400
     height: 200
-    padding: 15
+    anchors.centerIn: parent
 
-    GridLayout {
-        anchors.fill: parent
-        columns: 1
+    states: [
+        State {
+            name: "current"
+            PropertyChanges { target: dialog; loading: false }
+            PropertyChanges { target: generalSettingsForm; enabled: true }
+            PropertyChanges { target: cancelBtn; enabled: true }
+            PropertyChanges { target: saveBtn; enabled: false }
+        },
+        State {
+            name: "stale"
+            PropertyChanges { target: dialog; loading: false }
+            PropertyChanges { target: generalSettingsForm; enabled: true }
+            PropertyChanges { target: cancelBtn; enabled: true }
+            PropertyChanges { target: saveBtn; enabled: true }
+        },
+        State {
+            name: "loading"
+            PropertyChanges { target: dialog; loading: true }
+            PropertyChanges { target: generalSettingsForm; enabled: false }
+            PropertyChanges { target: cancelBtn; enabled: false }
+            PropertyChanges { target: saveBtn; enabled: false }
+        }
+    ]
 
-        GeneralForm {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+    QtObject {
+        id: settings
+        property string cdpAddress: ""
+    }
+
+    function loadData(cb) {
+        if (typeof settingsApi !== 'undefined') {
+            settingsApi.get((err, values) => {
+                if (err) {
+                    cb()
+                    return
+                }
+
+                settings.cdpAddress = values.cdpAddress
+                cb()
+            })
+        } else {
+            cb()
         }
     }
 
-    RowLayout {
-        width: parent.width
-        anchors.bottom: parent.bottom
+    function saveDate(cb) {
+        if (typeof settingsApi === 'undefined') {
+            root.state = "current"
+            cb()
+            return
+        }
 
-        Button {
-            Layout.alignment: Qt.AlignLeft
-            Material.background: Material.color(Material.Grey, Material.Shade300)
-            Material.foreground: Material.color(Material.Grey, Material.Shade900)
-            text: "Cancel"
-            onClicked: {
-                root.reject()
+        root.state = "loading"
+
+        settingsApi.save({
+            cdpAddress: settings.cdpAddress
+        }, (err) => {
+            if (err) {
+                root.state = "stale"
+                cb()
+                return
+            }
+
+            root.state = "current"
+            cb()
+        })
+    }
+
+    Component.onCompleted: {
+        root.state = "current"
+
+        loadData(() => {})
+    }
+
+    Common.Dialog {
+        id: dialog
+        title: "Settings"
+        width: root.width
+        height: root.height
+        padding: 15
+
+        GridLayout {
+            anchors.fill: parent
+            columns: 1
+
+            GeneralForm {
+                id: generalSettingsForm
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                cdpAddress: settings.cdpAddress
+                onChanged: (text) => {
+                    root.state = "stale"
+                    settings.cdpAddress = text
+                }
             }
         }
 
-        Button {
-            Layout.alignment: Qt.AlignRight
-            Material.background: Material.Indigo
-            Material.foreground: Material.color(Material.Grey, Material.Shade50)
-            text: "Save"
-            onClicked: {
-                root.accept()
+        RowLayout {
+            width: parent.width
+            anchors.bottom: parent.bottom
+
+            Button {
+                id: cancelBtn
+                Layout.alignment: Qt.AlignLeft
+                Material.background: Material.color(Material.Grey, Material.Shade300)
+                Material.foreground: Material.color(Material.Grey, Material.Shade900)
+                text: "Cancel"
+                onClicked: {
+                    loadData(() => dialog.reject())
+                }
+            }
+
+            Button {
+                id: saveBtn
+                Layout.alignment: Qt.AlignRight
+                Material.background: Material.Indigo
+                Material.foreground: Material.color(Material.Grey, Material.Shade50)
+                text: "Save"
+                onClicked: {
+                    saveDate(() => dialog.accept())
+                }
             }
         }
     }

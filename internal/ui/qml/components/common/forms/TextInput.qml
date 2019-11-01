@@ -7,6 +7,7 @@ Control {
     property string label: ""
     property string value: ""
     property string placeholder: ""
+    signal textChanged(string text)
 
     id: root
 
@@ -31,6 +32,11 @@ Control {
             selectionColor: Material.color(Material.Purple)
             Material.accent: Material.color(Material.Purple)
             Material.primary: Material.color(Material.Grey, Material.Shade200)
+            onTextChanged: (text) => {
+                if (root.textChanged) {
+                    root.textChanged(input.getText(0, input.length))
+                }
+            }
         }
     }
 }

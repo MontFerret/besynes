@@ -5,7 +5,11 @@ import QtQuick.Layouts 1.12
 import "../common" as Common
 import "../common/forms" as Forms
 
-Control {
+Item {
+    property string cdpAddress: ""
+    signal changed(string text)
+
+    id: root
     width: parent.width
     height: parent.height
 
@@ -13,10 +17,16 @@ Control {
         anchors.fill: parent
 
         Forms.TextInput {
+            enabled: root.enabled
             width: parent.width
             label: "CDP"
-            value: "http://127.0.0.1:9222"
+            value: root.cdpAddress
             placeholder: "CDP Address"
+            onTextChanged: (text) => {
+                if (root.changed) {
+                    root.changed(text)
+                }
+            }
         }
     }
 }

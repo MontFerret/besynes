@@ -13,27 +13,27 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type Service struct {
+type Executor struct {
 	logger   zerolog.Logger
 	compiler *compiler.Compiler
 }
 
-func NewService(
+func NewExecutor(
 	logger zerolog.Logger,
 	compiler *compiler.Compiler,
-) (*Service, error) {
+) (*Executor, error) {
 	if compiler == nil {
 		return nil, errors.New("missed compiler")
 	}
 
-	s := new(Service)
+	s := new(Executor)
 	s.logger = logger
 	s.compiler = compiler
 
 	return s, nil
 }
 
-func (svc *Service) Execute(ctx context.Context, query Query) Result {
+func (svc *Executor) Execute(ctx context.Context, query Query) Result {
 	ctx = drivers.WithContext(ctx, http.NewDriver(), drivers.AsDefault())
 	ctx = drivers.WithContext(ctx, cdp.NewDriver(cdp.WithAddress(query.CDPAddress)))
 

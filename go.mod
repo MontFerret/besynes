@@ -12,4 +12,5 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/rs/zerolog v1.15.0
 	github.com/therecipe/qt v0.0.0-20191015155015-04913862338b
+	go.etcd.io/bbolt v1.3.3
 )
