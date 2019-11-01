@@ -35,6 +35,10 @@ Item {
     }
 
     function closeTab(target_uid) {
+        if (target_uid < 0) {
+           return;
+        }
+
         const len = tabListModel.count
         let idx = -1
 
@@ -127,6 +131,34 @@ Item {
                         }
                     }
                 }
+            }
+        }
+
+        Text {
+            anchors.centerIn: parent
+            visible:tabListModel.count == 0
+            text: `Click "+" icon\nor\n${Qt.platform.os !== 'osx' ? "Ctrl" : "Cmd"}+N to create a new query`
+            horizontalAlignment: Text.AlignHCenter
+            color: Material.color(Material.Grey, Material.Shade700)
+        }
+
+        Shortcut {
+            sequence: "Ctrl+N"
+            onActivated: newTab()
+        }
+
+        Shortcut {
+            sequence: "Ctrl+W"
+            onActivated: {
+                const idx = queryContentList.currentIndex
+
+                if (idx < 0) {
+                    return
+                }
+
+                const tab = tabListModel.get(idx)
+
+                closeTab(tab.uid)
             }
         }
     }
