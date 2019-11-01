@@ -66,7 +66,7 @@ Item {
                     width: parent.width
                     height: 1
                     anchors.bottom: parent.bottom
-                    color: Material.color(Material.Grey, Material.Shade200)
+                    color: Material.color(Material.Grey, Material.Shade300)
                 }
 
                 ProgressBar {
@@ -149,8 +149,8 @@ Item {
                             name: "released"
                             PropertyChanges {
                                 target: handle;
-                                width: isVertical() ? 10 : 1;
-                                height: isVertical() ? 1 : 10;
+                                width: isVertical() ? 10 : 2;
+                                height: isVertical() ? 2 : 10;
                                 radius: 0
                             }
                         },
@@ -169,7 +169,7 @@ Item {
                     Rectangle {
                         id: handle
                         anchors.centerIn: parent
-                        color: Material.color(Material.Grey)
+                        color: Material.color(Material.Grey, Material.Shade700)
 
                         Behavior on height {
                             PropertyAnimation {

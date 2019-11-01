@@ -46,7 +46,7 @@ Item {
                 width: parent.width
                 height: parent.height
                 border.width: 1
-                border.color: Material.color(Material.Grey, Material.Shade200)
+                border.color: Material.color(Material.Grey, Material.Shade300)
                 color: root.enabled ? "white" : Material.color(Material.Grey, Material.Shade100)
             }
             onEditingFinished: root.editingFinished(editor.text)
@@ -55,7 +55,7 @@ Item {
                 id: lineNumbers
                 color: Material.color(Material.Grey, Material.Shade100)
                 border.width: 1
-                border.color: Material.color(Material.Grey, Material.Shade200)
+                border.color: Material.color(Material.Grey, Material.Shade300)
                 width: 50
                 implicitHeight: editor.height
 

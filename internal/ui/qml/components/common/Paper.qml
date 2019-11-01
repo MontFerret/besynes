@@ -7,6 +7,6 @@ Pane {
     background: Rectangle {
         anchors.fill: parent
         color: "white"
-        border.color: Material.color(Material.Grey, Material.Shade200)
+        border.color: Material.color(Material.Grey, Material.Shade300)
     }
 }
