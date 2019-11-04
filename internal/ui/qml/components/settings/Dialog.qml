@@ -46,6 +46,7 @@ Item {
     function loadData(cb) {
         if (typeof settingsApi !== 'undefined') {
             settingsApi.get((err, values) => {
+                console.log(err, JSON.stringify(values))
                 if (err) {
                     cb()
                     return

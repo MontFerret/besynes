@@ -33,7 +33,7 @@ func NewSettings(db *bolt.DB) (*Settings, error) {
 	return &Settings{db: db}, nil
 }
 
-func (r *Settings) Get() (result settings.Settings, err error) {
+func (r *Settings) Get() (result settings.SettingsDetails, err error) {
 	err = r.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(settingsBucket)
 		b := bucket.Get(settingsBucketKey)
@@ -44,7 +44,7 @@ func (r *Settings) Get() (result settings.Settings, err error) {
 			return nil
 		}
 
-		result = settings.Settings{}
+		result = settings.SettingsDetails{}
 
 		return json.Unmarshal(b, &result)
 	})
@@ -65,7 +65,7 @@ func (r *Settings) Exists() (exists bool, err error) {
 	return
 }
 
-func (r *Settings) Create(model settings.Settings) error {
+func (r *Settings) Create(model settings.SettingsDetails) error {
 	return r.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(settingsBucket)
 		b := bucket.Get(settingsBucketKey)
@@ -84,7 +84,7 @@ func (r *Settings) Create(model settings.Settings) error {
 	})
 }
 
-func (r *Settings) Update(model settings.Settings) error {
+func (r *Settings) Update(model settings.SettingsDetails) error {
 	return r.db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket(settingsBucket)
 		b := bucket.Get(settingsBucketKey)

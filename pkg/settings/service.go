@@ -1,8 +1,10 @@
 package settings
 
 import (
+	"github.com/MontFerret/besynes/pkg/common/dal"
 	"github.com/pkg/errors"
 	"sync/atomic"
+	"time"
 )
 
 type Service struct {
@@ -17,9 +19,10 @@ func New(db Repository) (*Service, error) {
 		return nil, errors.Wrap(err, "check settings existence")
 	}
 
-	current := NewDefault()
+	var current SettingsDetails
 
 	if !exists {
+		current = toDetails(NewDefault())
 		err := db.Create(current)
 
 		if err != nil {
@@ -41,18 +44,33 @@ func New(db Repository) (*Service, error) {
 	return &Service{db, av}, nil
 }
 
-func (svc *Service) Get() Settings {
-	cached := svc.cache.Load().(Settings)
+func (svc *Service) Get() SettingsDetails {
+	cached := svc.cache.Load().(SettingsDetails)
 
 	return cached
 }
 
-func (svc *Service) Save(settings Settings) error {
-	if err := svc.db.Update(settings); err != nil {
-		return err
+func (svc *Service) Save(settings Settings) (dal.Metadata, error) {
+	details := toDetails(settings)
+
+	err := svc.db.Update(details)
+
+	if err != nil {
+		return details.Metadata, err
 	}
 
-	svc.cache.Store(settings)
+	svc.cache.Store(details)
 
-	return nil
+	return details.Metadata, nil
+}
+
+func toDetails(settings Settings) SettingsDetails {
+	meta := dal.Metadata{
+		UpdateAt: time.Now(),
+	}
+
+	return SettingsDetails{
+		Metadata: meta,
+		Settings: settings,
+	}
 }

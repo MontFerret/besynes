@@ -2,20 +2,21 @@ package settings
 
 import (
 	"github.com/MontFerret/besynes/pkg/common/dal"
-	"time"
 )
 
-type Settings struct {
-	dal.Metadata
-	CDPAddress string `json:"cdp_address"`
-}
+type (
+	Settings struct {
+		CDPAddress string `json:"cdp_address"`
+	}
+
+	SettingsDetails struct {
+		dal.Metadata
+		Settings
+	}
+)
 
 func NewDefault() Settings {
 	return Settings{
-		Metadata: dal.Metadata{
-			CreatedAt: time.Now(),
-			UpdateAt:  nil,
-		},
 		CDPAddress: "http://127.0.0.1:9222",
 	}
 }

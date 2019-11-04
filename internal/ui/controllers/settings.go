@@ -3,50 +3,38 @@ package controllers
 import (
 	"github.com/rs/zerolog"
 	"github.com/therecipe/qt/core"
-	"github.com/therecipe/qt/qml"
 
-	"github.com/MontFerret/besynes/internal/ui/bridges"
+	"github.com/MontFerret/besynes/pkg/common"
+	"github.com/MontFerret/besynes/pkg/common/dal"
 	"github.com/MontFerret/besynes/pkg/settings"
 )
 
 type Settings struct {
-	logger   zerolog.Logger
-	jsEngine *qml.QJSEngine
-	service  *settings.Service
-	async    *bridges.AsyncHelper
-	bridge   *bridges.Settings
+	logger  zerolog.Logger
+	service *settings.Service
 }
 
 func NewSettings(
 	logger zerolog.Logger,
-	jsEngine *qml.QJSEngine,
 	service *settings.Service,
 ) *Settings {
 	return &Settings{
-		logger:   logger,
-		jsEngine: jsEngine,
-		service:  service,
+		logger:  logger,
+		service: service,
 	}
 }
 
-func (ctl *Settings) Connect(async *bridges.AsyncHelper, bridge *bridges.Settings) {
-	if ctl.bridge != nil {
-		ctl.bridge.DisconnectGet()
-		ctl.bridge.DisconnectSave()
-	}
-
-	ctl.async = async
-	ctl.bridge = bridge
-	ctl.bridge.ConnectGet(ctl.get)
+func (ctl *Settings) Get() (settings.SettingsDetails, error) {
+	return ctl.service.Get(), nil
 }
 
-func (ctl *Settings) get(callback *qml.QJSValue) {
-	// No need to start a new goroutine, service uses cached value
-	values := ctl.service.Get()
+func (ctl *Settings) Save(values *core.QJsonObject) (dal.Metadata, error) {
+	if !values.Contains("cdpAddress") {
 
-	qvar := core.NewQVariant1(values)
-	jserr := qml.NewQJSValue8("")
-	jsv := ctl.jsEngine.ToScriptValue(qvar)
+		return dal.Metadata{}, common.Error(common.ErrMissedArgument, "cdpAddress")
+	}
 
-	callback.Call([]*qml.QJSValue{jserr, jsv})
+	return ctl.service.Save(settings.Settings{
+		CDPAddress: values.Value("cdpAddress").ToString(),
+	})
 }

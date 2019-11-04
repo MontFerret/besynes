@@ -4,121 +4,71 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"runtime"
 	"time"
 
 	"github.com/cloudfoundry/bytefmt"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/therecipe/qt/core"
-	"github.com/therecipe/qt/qml"
 
-	"github.com/MontFerret/besynes/internal/ui/bridges"
 	"github.com/MontFerret/besynes/pkg/execution"
 	"github.com/MontFerret/besynes/pkg/settings"
 )
 
 var ErrInvalidParams = errors.New("Invalid parameter values. Use valid JSON object.")
 
-type Execution struct {
-	logger   zerolog.Logger
-	jsEngine *qml.QJSEngine
-	settings *settings.Service
-	executor *execution.Executor
-	async    *bridges.AsyncHelper
-	bridge   *bridges.Execution
-}
+type (
+	ExecutionStatistics struct {
+		Size        string `json:"size"`
+		Runtime     string `json:"runtime"`
+		Compilation string `json:"compilation"`
+	}
+
+	ExecutionResult struct {
+		Data  []byte
+		Error error
+		Stats ExecutionStatistics
+	}
+
+	Execution struct {
+		logger   zerolog.Logger
+		settings *settings.Service
+		executor *execution.Executor
+	}
+)
 
 func NewExecution(
 	logger zerolog.Logger,
-	jsEngine *qml.QJSEngine,
 	settingsSvc *settings.Service,
 	executor *execution.Executor,
 ) *Execution {
 	return &Execution{
 		logger:   logger,
-		jsEngine: jsEngine,
 		settings: settingsSvc,
 		executor: executor,
 	}
 }
 
-func (ctl *Execution) Connect(async *bridges.AsyncHelper, bridge *bridges.Execution) {
-	if ctl.bridge != nil {
-		ctl.bridge.DisconnectExecute()
+func (ctl *Execution) Execute(query *core.QJsonObject) (ExecutionResult, error) {
+	q, err := ctl.parseQuery(query)
+
+	if err != nil {
+		return ExecutionResult{}, err
 	}
 
-	ctl.async = async
-	ctl.bridge = bridge
-	ctl.bridge.ConnectExecute(ctl.execute)
-}
+	out := ctl.executor.Execute(context.Background(), q)
 
-func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				var err error
+	result := ExecutionResult{
+		Data:  out.Data,
+		Error: out.Error,
+		Stats: ExecutionStatistics{},
+	}
 
-				// find out exactly what the error was and set err
-				switch x := r.(type) {
-				case string:
-					err = errors.New(x)
-				case error:
-					err = x
-				default:
-					err = errors.New("unknown panic")
-				}
+	result.Stats.Compilation = ctl.formatDuration(out.Stats.Compilation)
+	result.Stats.Runtime = ctl.formatDuration(out.Stats.Runtime)
+	result.Stats.Size = ctl.formatSize(len(out.Data))
 
-				b := make([]byte, 0, 20)
-				runtime.Stack(b, true)
-
-				ctl.logger.Error().
-					Timestamp().
-					Err(err).
-					Str("stack", string(b)).
-					Msg("Panic")
-			}
-		}()
-
-		var jsv *qml.QJSValue
-
-		ctl.async.Run(func() {
-			jsv = ctl.jsEngine.NewObject()
-		})
-
-		q, err := ctl.parseQuery(query)
-
-		if err != nil {
-			jsv.SetProperty("error", qml.NewQJSValue8(err.Error()))
-
-			// https://github.com/therecipe/qt/issues/994
-			ctl.async.Run(func() {
-				callback.Call([]*qml.QJSValue{jsv})
-			})
-
-			return
-		}
-
-		out := ctl.executor.Execute(context.Background(), q)
-
-		jsv.SetProperty("data", qml.NewQJSValue8(ctl.formatJSON(out.Data)))
-
-		if out.Error != nil {
-			jsv.SetProperty("error", qml.NewQJSValue8(out.Error.Error()))
-		}
-
-		jsvStats := ctl.jsEngine.NewObject()
-		jsvStats.SetProperty("compilation", qml.NewQJSValue8(ctl.formatDuration(out.Stats.Compilation)))
-		jsvStats.SetProperty("runtime", qml.NewQJSValue8(ctl.formatDuration(out.Stats.Runtime)))
-		jsvStats.SetProperty("size", qml.NewQJSValue8(ctl.formatSize(len(out.Data))))
-
-		jsv.SetProperty("stats", jsvStats)
-
-		// https://github.com/therecipe/qt/issues/994
-		ctl.async.Run(func() {
-			callback.Call([]*qml.QJSValue{jsv})
-		})
-	}()
+	return result, nil
 }
 
 func (ctl *Execution) parseQuery(query *core.QJsonObject) (execution.Query, error) {
