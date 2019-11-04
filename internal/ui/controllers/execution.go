@@ -23,9 +23,10 @@ var ErrInvalidParams = errors.New("Invalid parameter values. Use valid JSON obje
 type Execution struct {
 	logger   zerolog.Logger
 	jsEngine *qml.QJSEngine
-	bridge   *bridges.Execution
 	settings *settings.Service
 	executor *execution.Executor
+	async    *bridges.AsyncHelper
+	bridge   *bridges.Execution
 }
 
 func NewExecution(
@@ -42,11 +43,12 @@ func NewExecution(
 	}
 }
 
-func (ctl *Execution) Connect(bridge *bridges.Execution) {
+func (ctl *Execution) Connect(async *bridges.AsyncHelper, bridge *bridges.Execution) {
 	if ctl.bridge != nil {
 		ctl.bridge.DisconnectExecute()
 	}
 
+	ctl.async = async
 	ctl.bridge = bridge
 	ctl.bridge.ConnectExecute(ctl.execute)
 }
@@ -78,14 +80,19 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 			}
 		}()
 
+		var jsv *qml.QJSValue
+
+		ctl.async.Run(func() {
+			jsv = ctl.jsEngine.NewObject()
+		})
+
 		q, err := ctl.parseQuery(query)
 
 		if err != nil {
-			jsv := ctl.jsEngine.NewObject()
 			jsv.SetProperty("error", qml.NewQJSValue8(err.Error()))
 
 			// https://github.com/therecipe/qt/issues/994
-			ctl.bridge.RunOnMainHelper(func() {
+			ctl.async.Run(func() {
 				callback.Call([]*qml.QJSValue{jsv})
 			})
 
@@ -93,8 +100,6 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 		}
 
 		out := ctl.executor.Execute(context.Background(), q)
-
-		jsv := ctl.jsEngine.NewObject()
 
 		jsv.SetProperty("data", qml.NewQJSValue8(ctl.formatJSON(out.Data)))
 
@@ -110,7 +115,7 @@ func (ctl *Execution) execute(query *core.QJsonObject, callback *qml.QJSValue) {
 		jsv.SetProperty("stats", jsvStats)
 
 		// https://github.com/therecipe/qt/issues/994
-		ctl.bridge.RunOnMainHelper(func() {
+		ctl.async.Run(func() {
 			callback.Call([]*qml.QJSValue{jsv})
 		})
 	}()

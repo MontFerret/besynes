@@ -19,4 +19,4 @@ generate:
 	qtmoc desktop
 
 setup: install generate
-	qtesetup -test=false
+	qtsetup -test=false

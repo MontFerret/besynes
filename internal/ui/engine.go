@@ -39,13 +39,15 @@ func New(
 }
 
 func (e *Engine) Run() error {
+	helper := bridges.NewAsyncHelper(nil)
+
 	execBridge := bridges.NewExecution(nil)
 	execCtl := controllers.NewExecution(e.logger, e.app.QJSEngine_PTR(), e.settings, e.executor)
-	execCtl.Connect(execBridge)
+	execCtl.Connect(helper, execBridge)
 
 	settingsBridge := bridges.NewSettings(nil)
 	settingsCtl := controllers.NewSettings(e.logger, e.app.QJSEngine_PTR(), e.settings)
-	settingsCtl.Connect(settingsBridge)
+	settingsCtl.Connect(helper, settingsBridge)
 
 	e.app.RootContext().SetContextProperty("settingsApi", settingsBridge)
 	e.app.RootContext().SetContextProperty("queryApi", execBridge)
