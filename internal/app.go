@@ -1,18 +1,19 @@
 package internal
 
 import (
-	"github.com/MontFerret/besynes/pkg/common"
-	"github.com/MontFerret/besynes/pkg/settings"
 	"os"
 	"path/filepath"
 
 	"github.com/MontFerret/ferret/pkg/compiler"
+	"github.com/natefinch/lumberjack"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/MontFerret/besynes/internal/db"
 	"github.com/MontFerret/besynes/internal/ui"
+	"github.com/MontFerret/besynes/pkg/common"
 	"github.com/MontFerret/besynes/pkg/execution"
+	"github.com/MontFerret/besynes/pkg/settings"
 )
 
 const appDirName = ".besynes"
@@ -56,15 +57,19 @@ func ensureHomeDir() (string, error) {
 }
 
 func New() (*Application, error) {
-	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
-
 	appDirPath, err := ensureHomeDir()
 
 	if err != nil {
-		logger.Err(err).Msg(ErrCreateDirectory.Error())
-
 		return nil, ErrCreateDirectory
 	}
+
+	logger := zerolog.New(&lumberjack.Logger{
+		Filename:   filepath.Join(appDirPath, "logs/besynes.log"),
+		MaxSize:    100, // megabytes
+		MaxAge:     28,  //days
+		MaxBackups: 2,
+		LocalTime:  true,
+	}).With().Timestamp().Logger()
 
 	dbManager, err := db.New(db.Settings{
 		Dir: appDirPath,
