@@ -43,6 +43,8 @@ Item {
         property string cdpAddress: ""
     }
 
+    function noop() {}
+
     function loadData(cb) {
         if (typeof settingsApi !== 'undefined') {
             settingsApi.get((err, values) => {
@@ -52,7 +54,8 @@ Item {
                     return
                 }
 
-                settings.cdpAddress = values.cdpAddress
+                // TODO: Update to JSON case keys
+                settings.cdpAddress = values.Settings.CDPAddress
                 cb()
             })
         } else {
@@ -60,7 +63,7 @@ Item {
         }
     }
 
-    function saveDate(cb) {
+    function saveData(cb) {
         if (typeof settingsApi === 'undefined') {
             root.state = "current"
             cb()
@@ -122,9 +125,7 @@ Item {
                 Material.background: Material.color(Material.Grey, Material.Shade300)
                 Material.foreground: Material.color(Material.Grey, Material.Shade900)
                 text: "Cancel"
-                onClicked: {
-                    loadData(() => dialog.reject())
-                }
+                onClicked: dialog.reject()
             }
 
             Button {
@@ -133,10 +134,16 @@ Item {
                 Material.background: Material.Indigo
                 Material.foreground: Material.color(Material.Grey, Material.Shade50)
                 text: "Save"
-                onClicked: {
-                    saveDate(() => dialog.accept())
-                }
+                onClicked: dialog.accept()
             }
+        }
+
+        onAccepted: {
+            saveDate(noop)
+        }
+
+        onRejected: {
+            loadData(noop)
         }
     }
 }
