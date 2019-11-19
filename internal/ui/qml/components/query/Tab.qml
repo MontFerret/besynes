@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls.Material 2.13
 import "../common" as Common
 
-Item {
+Control {
     property string name: "UNTITLED QUERY"
     property string text: ""
     signal saveResult(string data)
@@ -63,7 +63,7 @@ Item {
                 color: Material.color(Material.Grey, Material.Shade50)
 
                 Rectangle {
-                    width: parent.width
+                    width: parent.width - 5
                     height: 1
                     anchors.bottom: parent.bottom
                     color: Material.color(Material.Grey, Material.Shade300)
@@ -73,7 +73,7 @@ Item {
                     id: progress
                     Material.accent: Material.color(Material.Indigo, Material.Shade800)
                     anchors.bottom: parent.bottom
-                    width: parent.width
+                    width: parent.width - 5
                     indeterminate: true
                 }
             }
@@ -134,58 +134,7 @@ Item {
             Component {
                 id: splitHandle
 
-                Rectangle {
-                    function isVertical() {
-                        return parent.orientation === Qt.Vertical
-                    }
-
-                    id: root
-                    implicitWidth: 8
-                    implicitHeight: 8
-                    color: Material.color(Material.Grey, Material.Shade50)
-                    state: SplitHandle.pressed ? "pressed" : "released"
-                    states: [
-                        State {
-                            name: "released"
-                            PropertyChanges {
-                                target: handle;
-                                width: isVertical() ? 10 : 2;
-                                height: isVertical() ? 2 : 10;
-                                radius: 0
-                            }
-                        },
-
-                        State {
-                            name: "pressed"
-                            PropertyChanges {
-                                target: handle;
-                                width: 3;
-                                height: 3;
-                                radius: 3
-                            }
-                        }
-                    ]
-
-                    Rectangle {
-                        id: handle
-                        anchors.centerIn: parent
-                        color: Material.color(Material.Grey, Material.Shade700)
-
-                        Behavior on height {
-                            PropertyAnimation {
-                                easing.type: Easing.InQuad;
-                                duration: 100
-                            }
-                        }
-
-                        Behavior on width {
-                            PropertyAnimation {
-                                easing.type: Easing.InQuad;
-                                duration: 100
-                            }
-                        }
-                    }
-                }
+                Common.SplitHandle {}
             }
 
             SplitView {

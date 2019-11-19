@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Controls.Material 2.13
 
-Item {
+Control {
     signal saveResult(string query, string data)
 
     id: root

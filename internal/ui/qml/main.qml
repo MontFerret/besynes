@@ -3,8 +3,10 @@ import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
 import Qt.labs.platform 1.1 as Labs
+import "./components/common" as Common
 import "./components/query" as Query
 import "./components/settings" as Settings
+import "./components/catalog"
 
 ApplicationWindow {
     id: win
@@ -83,13 +85,44 @@ ApplicationWindow {
         id: settingsDialog
     }
 
-    Query.TabView {
-        id: tabs
-        onSaveResult: (query, data) => {
-            const fileName = `${query}.json`
-            fileDialog.title = "Save query results"
-            fileDialog.currentFile = fileName
-            fileDialog.open()
+    Component {
+        id: splitHandle
+
+        Common.SplitHandle {}
+    }
+
+    SplitView {
+        anchors.fill: parent
+        orientation: Qt.Horizontal
+        handle: splitHandle
+
+        Rectangle {
+            SplitView.maximumWidth: win.width / 2
+            SplitView.preferredWidth: 0
+            SplitView.minimumWidth: 0
+
+            CatalogView {
+                id: catalogView
+                anchors.fill: parent
+            }
+        }
+
+        Rectangle {
+            SplitView.fillWidth: true
+            SplitView.fillHeight: true
+            SplitView.minimumWidth: 0
+            SplitView.preferredWidth: 200
+
+            Query.TabView {
+                id: tabView
+                anchors.fill: parent
+                onSaveResult: (query, data) => {
+                    const fileName = `${query}.json`
+                    fileDialog.title = "Save query results"
+                    fileDialog.currentFile = fileName
+                    fileDialog.open()
+                }
+            }
         }
     }
 }

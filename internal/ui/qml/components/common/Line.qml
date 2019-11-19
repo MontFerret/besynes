@@ -6,7 +6,7 @@ Item {
 
     property int orientation: Qt.Horizontal
     property int align: Qt.AlignBottom
-    property color color: Material.color(Material.Grey, Material.Shade200)
+    property color color: Material.color(Material.Grey, Material.Shade300)
     property real size: parent.width
 
     Rectangle {
@@ -16,6 +16,6 @@ Item {
         anchors.top: root.align === Qt.AlignTop ? parent.top : undefined
         anchors.right: root.align === Qt.AlignRight ? parent.right : undefined
         anchors.left: root.align === Qt.AlignLeft ? parent.left : undefined
-        color: Material.color(Material.Grey, Material.Shade200)
+        color: root.color
     }
 }
