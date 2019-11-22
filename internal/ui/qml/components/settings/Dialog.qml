@@ -55,7 +55,7 @@ Item {
                 }
 
                 // TODO: Update to JSON case keys
-                settings.cdpAddress = values.Settings.CDPAddress
+                settings.cdpAddress = values.settings.cpdAddress
                 cb()
             })
         } else {

@@ -39,6 +39,55 @@ Item {
         }
     ]
 
+    function run() {
+        // if true, we in QtCreator
+        if (typeof queryApi === "undefined") {
+            root.state = "loading"
+            resultsViewer.value = {
+                data: query.text,
+                error: ""
+            }
+            root.state = "ready"
+
+            return
+        }
+
+        root.state = "loading"
+
+        try {
+            // reset
+            resultsViewer.value = {
+                data: "",
+                error: ""
+            }
+
+            // const result
+            queryApi.execute({
+                text: query.text,
+                params: query.params,
+            }, (err, result) => {
+                if (!err) {
+                    resultsViewer.value = result
+                } else {
+                    resultsViewer.value = {
+                        data: "",
+                        error: err
+                    }
+                }
+
+                root.state = "ready"
+            })
+        } catch (e) {
+            resultsViewer.value = {
+                data: "",
+                error: e.toString(),
+                stats: {}
+            }
+
+            root.state = "ready"
+        }
+    }
+
     Component.onCompleted: {
         root.state = "new"
     }
@@ -88,41 +137,7 @@ Item {
                     id: execBtn
                     text: "Run"
                     highlighted: true
-                    onClicked: {
-                        // if true, we in QtCreator
-                        if (typeof queryApi === "undefined") {
-                            root.state = "loading"
-                            resultsViewer.value = {
-                                data: query.text,
-                                error: ""
-                            }
-                            root.state = "ready"
-
-                            return
-                        }
-
-                        root.state = "loading"
-
-                        try {
-                            // const result
-                            queryApi.execute({
-                                text: query.text,
-                                params: query.params,
-                            }, (result) => {
-                                resultsViewer.value = result
-
-                                root.state = "ready"
-                            })
-                        } catch (e) {
-                            resultsViewer.value = {
-                                data: "",
-                                error: e.toString(),
-                                stats: {}
-                            }
-
-                            root.state = "ready"
-                        }
-                    }
+                    onClicked: run()
                 }
             }
         }
@@ -256,6 +271,11 @@ Item {
                         }
                     }
                 }
+            }
+
+            Shortcut {
+                sequence: "Ctrl+R"
+                onActivated: run()
             }
         }
     }

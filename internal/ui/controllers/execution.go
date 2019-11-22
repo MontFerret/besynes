@@ -25,9 +25,9 @@ type (
 	}
 
 	ExecutionResult struct {
-		Data  []byte
-		Error error
-		Stats ExecutionStatistics
+		Data  string              `json:"data"`
+		Error string              `json:"error"`
+		Stats ExecutionStatistics `json:"stats"`
 	}
 
 	Execution struct {
@@ -59,8 +59,8 @@ func (ctl *Execution) Execute(query *core.QJsonObject) (ExecutionResult, error) 
 	out := ctl.executor.Execute(context.Background(), q)
 
 	result := ExecutionResult{
-		Data:  out.Data,
-		Error: out.Error,
+		Data:  ctl.formatJSON(out.Data),
+		Error: ctl.formatError(out.Error),
 		Stats: ExecutionStatistics{},
 	}
 
@@ -124,6 +124,14 @@ func (ctl *Execution) formatJSON(data []byte) string {
 	}
 
 	return b.String()
+}
+
+func (ctl *Execution) formatError(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	return err.Error()
 }
 
 func (ctl *Execution) isParamsEmpty(text []byte) bool {
