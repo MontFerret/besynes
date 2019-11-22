@@ -1,7 +1,6 @@
-name: Go
+name: Build
 on: [push]
 jobs:
-
   build:
     strategy:
       matrix:
