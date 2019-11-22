@@ -15,6 +15,7 @@ The project is in its early stage of development, therefore the only way to run 
 $ git clone https://github.com/MontFerret/besynes.git
 $ cd besynes
 $ make setup
+$ make build
 ```
 
 #### Dev dependencies
