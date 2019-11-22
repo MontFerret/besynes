@@ -2,7 +2,7 @@
 
 > Word “besynes” appeared in the “Book of St Albans” of 1486 as the “proper term” for ferrets, i.e. a word which describes the characteristics of ferrets.
 
-![besynes](https://raw.githubusercontent.com/MontFerret/besynes/master/assets/intro.jpg)
+![besynes](https://raw.githubusercontent.com/MontFerret/besynes/master/assets/intro.png)
 
 ## WIP
 The project is in its early stage of development, therefore the only way to run it is to build from the source.
