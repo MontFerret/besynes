@@ -3,6 +3,7 @@ on: [push]
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
@@ -15,11 +16,17 @@ jobs:
     - name: Linux prerequisites 
       if: matrix.platform == 'ubuntu-latest'
       run: |
-        sudo apt-get -y install build-essential libglu1-mesa-dev libpulse-dev libglib2.0-dev
+        sudo apt-get -y install build-essential libglu1-mesa-dev libpulse-dev libglib2.0-dev && \
+        export OS=linux
+    - name: macOS prerequisites 
+      if: matrix.platform == 'macos-latest'
+      run: |
+        export OS=darwin
     - name: Windows prerequisites 
       if: matrix.platform == 'windows-latest'
       run: |
-        @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"        
+        @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" && \
+        set OS=windows
     - name: Windows prerequisites #2
       if: matrix.platform == 'windows-latest'
       run: |
