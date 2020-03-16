@@ -44,10 +44,10 @@ func New(db Repository) (*Service, error) {
 	return &Service{db, av}, nil
 }
 
-func (svc *Service) Get() SettingsDetails {
+func (svc *Service) Get() (SettingsDetails, error) {
 	cached := svc.cache.Load().(SettingsDetails)
 
-	return cached
+	return cached, nil
 }
 
 func (svc *Service) Save(settings Settings) (dal.Metadata, error) {

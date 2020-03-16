@@ -9,6 +9,11 @@ import (
 	"github.com/MontFerret/besynes/pkg/settings"
 )
 
+// TODO: Delete me when data serialization gets fixed
+type SettingsViewModel struct {
+	CDPAddress string `json:"cdpAddress"`
+}
+
 type Settings struct {
 	logger  zerolog.Logger
 	service *settings.Service
@@ -24,13 +29,20 @@ func NewSettings(
 	}
 }
 
-func (ctl *Settings) Get() (settings.SettingsDetails, error) {
-	return ctl.service.Get(), nil
+func (ctl *Settings) Get() (SettingsViewModel, error) {
+	out, err := ctl.service.Get()
+
+	if err != nil {
+		return SettingsViewModel{}, err
+	}
+
+	return SettingsViewModel{
+		CDPAddress: out.Settings.CDPAddress,
+	}, nil
 }
 
 func (ctl *Settings) Save(values *core.QJsonObject) (dal.Metadata, error) {
 	if !values.Contains("cdpAddress") {
-
 		return dal.Metadata{}, common.Error(common.ErrMissedArgument, "cdpAddress")
 	}
 

@@ -1,4 +1,5 @@
 import QtQuick 2.13
+import Qt.labs.platform 1.1
 import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
@@ -15,12 +16,6 @@ ApplicationWindow {
     height: 768
     title: "Besynes"
 
-    QtObject {
-        id: settingsModel
-
-        property string cdpAddress: "http://127.0.0.1:9222"
-    }
-
     header: ToolBar {
         Material.background: Material.DeepPurple
         leftPadding: 15
@@ -29,39 +24,48 @@ ApplicationWindow {
         RowLayout {
             anchors.fill: parent
 
-            Rectangle {
+            RoundButton {
                 Layout.alignment: Qt.AlignLeft
-
-                Image {
-                    id: logoImg
-                    source: "./images/logo.png"
-                    width: 50
-                    height: 50
-                    antialiasing: true
-
-                    RotationAnimator {
-                        id: logoImgAnimation
-                        target: logoImg;
-                        from: 0;
-                        to: 360;
-                        duration: 500
-                        running: false
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        onDoubleClicked: {
-                            logoImgAnimation.running = true
-                        }
-                    }
+                icon.source: "./icons/menu.svg"
+                flat: true
+                onClicked: {
+                    //settingsDialog.open()
+                    drawer.open()
                 }
             }
 
-            TabButton {
+//            Rectangle {
+//                Layout.alignment: Qt.AlignCenter
+
+//                Image {
+//                    id: logoImg
+//                    source: "./images/logo.png"
+//                    width: 50
+//                    height: 50
+//                    antialiasing: true
+
+//                    RotationAnimator {
+//                        id: logoImgAnimation
+//                        target: logoImg;
+//                        from: 0;
+//                        to: 360;
+//                        duration: 500
+//                        running: false
+//                    }
+
+//                    MouseArea {
+//                        anchors.fill: parent
+//                        onDoubleClicked: {
+//                            logoImgAnimation.running = true
+//                        }
+//                    }
+//                }
+//            }
+
+            RoundButton {
                 Layout.alignment: Qt.AlignRight
                 icon.source: "./icons/settings.svg"
-                Material.foreground: "white"
-                Material.accent: "white"
+                flat: true
                 onClicked: {
                     settingsDialog.open()
                 }
@@ -83,46 +87,35 @@ ApplicationWindow {
 
     Settings.Dialog {
         id: settingsDialog
-    }
-
-    Component {
-        id: splitHandle
-
-        Common.SplitHandle {}
-    }
-
-    SplitView {
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-        handle: splitHandle
-
-        Rectangle {
-            SplitView.maximumWidth: win.width / 2
-            SplitView.preferredWidth: 0
-            SplitView.minimumWidth: 0
-
-            CatalogView {
-                id: catalogView
-                anchors.fill: parent
-            }
+        onError: (err) => {
+            alert.open({ type: 'error', title: "Error", body: err });
         }
+    }
 
-        Rectangle {
-            SplitView.fillWidth: true
-            SplitView.fillHeight: true
-            SplitView.minimumWidth: 0
-            SplitView.preferredWidth: 200
+    Common.Alert {
+        id: alert
+    }
 
-            Query.TabView {
-                id: tabView
-                anchors.fill: parent
-                onSaveResult: (query, data) => {
-                    const fileName = `${query}.json`
-                    fileDialog.title = "Save query results"
-                    fileDialog.currentFile = fileName
-                    fileDialog.open()
-                }
-            }
+    Drawer {
+        id: drawer
+        width: 0.4 * parent.width
+        height: parent.height
+        visible: false
+
+        Label {
+            text: "Content goes here!"
+            anchors.centerIn: parent
+        }
+    }
+
+    Query.TabView {
+        id: tabView
+        anchors.fill: parent
+        onSaveResult: (query, data) => {
+            const fileName = `${query}.json`
+            fileDialog.title = "Save query results"
+            fileDialog.currentFile = fileName
+            fileDialog.open()
         }
     }
 }

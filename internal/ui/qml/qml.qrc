@@ -14,6 +14,8 @@
         <file>components/common/Statistic.qml</file>
         <file>components/common/CodeEditor.qml</file>
         <file>icons/copy.svg</file>
+        <file>icons/menu.svg</file>
+        <file>icons/menu_open.svg</file>
         <file>icons/save.svg</file>
         <file>icons/settings.svg</file>
         <file>components/settings/Dialog.qml</file>
@@ -25,5 +27,6 @@
         <file>components/common/forms/TextInput.qml</file>
         <file>components/catalog/CatalogView.qml</file>
         <file>components/common/SplitHandle.qml</file>
+        <file>components/common/Alert.qml</file>
     </qresource>
 </RCC>

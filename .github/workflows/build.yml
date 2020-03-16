@@ -1,0 +1,49 @@
+name: build
+on: [push]
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+    - name: Linux prerequisites 
+      if: matrix.platform == 'ubuntu-latest'
+      run: |
+        sudo apt-get -y install build-essential libglu1-mesa-dev libpulse-dev libglib2.0-dev && \
+        export OS=linux
+    - name: macOS prerequisites 
+      if: matrix.platform == 'macos-latest'
+      run: |
+        export OS=darwin
+    - name: Windows prerequisites 
+      if: matrix.platform == 'windows-latest'
+      run: |
+        @"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin" && \
+        set OS=windows
+    - name: Windows prerequisites #2
+      if: matrix.platform == 'windows-latest'
+      run: |
+        choco install make 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2.0.0
+      with:
+        version: 5.13.2
+        target: desktop
+    - name: Install Qt bindings
+      run: |
+        go get -v github.com/therecipe/qt/cmd/...
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+    - name: Setup
+      run: |
+        make setup
+    - name: Build
+      run: |
+        make build

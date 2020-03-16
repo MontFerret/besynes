@@ -6,7 +6,7 @@ import (
 
 type (
 	Settings struct {
-		CDPAddress string `json:"cdp_address"`
+		CDPAddress string `json:"cdpAddress"`
 	}
 
 	SettingsDetails struct {
