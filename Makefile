@@ -1,7 +1,7 @@
 export GOPATH
 export GO111MODULE = on
 export QT_VERSION = 5.13.2
-export GOQT = $(go env GOPATH)/bin
+export GOQT = ${GOPATH}/bin
 export OS ?= $(shell uname -s | awk '{print tolower($0)}')
 
 default: build

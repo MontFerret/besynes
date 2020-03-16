@@ -18,25 +18,38 @@ Item {
             dialog.title = msg.title;
         }
 
-        dialogText.text = msg.text || "";
+        let text = "";
 
-        const type = (msg.type || "info").toLowerCase();
-
-        switch (type) {
-            case "error": {
-
-                break;
-            }
-            case "warn": {
-                break;
-            }
-            case "info": {
-                break;
-            }
-            default: {
-                break;
-            }
+        if (typeof msg.body === "string") {
+            text = msg.body;
+        } else if (msg.body instanceof Error) {
+            text = msg.body.message;
+        } else if (typeof msg.body === "object") {
+            text = JSON.stringify(msg.body);
+        } else if (msg.body) {
+            text = msg.body.toString();
         }
+
+
+        dialogText.text = text;
+
+//        const type = (msg.type || "info").toLowerCase();
+
+//        switch (type) {
+//            case "error": {
+
+//                break;
+//            }
+//            case "warn": {
+//                break;
+//            }
+//            case "info": {
+//                break;
+//            }
+//            default: {
+//                break;
+//            }
+//        }
 
         dialog.open()
     }

@@ -15,16 +15,6 @@ ApplicationWindow {
     height: 768
     title: "Besynes"
 
-    QtObject {
-        id: settingsModel
-
-        property string cdpAddress: "http://127.0.0.1:9222"
-    }
-
-    Component.onCompleted: {
-        //alert.open({ title: "Test", text: "Test alert", type: "error" })
-    }
-
     header: ToolBar {
         Material.background: Material.DeepPurple
         leftPadding: 15
@@ -88,7 +78,7 @@ ApplicationWindow {
     Settings.Dialog {
         id: settingsDialog
         onError: (err) => {
-            alert.open({ type: 'error', title: "Error", text: err });
+            alert.open({ type: 'error', title: "Error", body: err });
         }
     }
 

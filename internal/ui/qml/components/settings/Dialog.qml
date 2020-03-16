@@ -51,6 +51,10 @@ Item {
         if (err && root.error) {
             if (typeof err === "string") {
                 root.error(err);
+            } else if (err instanceof Error) {
+                root.error(err.message);
+            } else if (typeof err === "object") {
+                root.error(JSON.stringify(err));
             } else {
                 root.error(err.toString());
             }
@@ -59,19 +63,23 @@ Item {
 
     function loadData(cb) {
         if (typeof settingsApi === 'undefined') {
+            root.state = "current"
             cb()
             return;
         }
 
+        root.state = "loading"
+
         settingsApi.get((err, values) => {
+            root.state = "current"
+
             if (err) {
                 cb(err)
                 return
             }
 
-            // TODO: Update to JSON case keys
-            cb(JSON.stringify(values))
-            settings.cdpAddress = values.settings.cpdAddress
+            settings.cdpAddress = values.cdpAddress
+            cb()
         })
     }
 
@@ -88,13 +96,13 @@ Item {
             cdpAddress: settings.cdpAddress
         }, (err) => {
             if (err) {
-                cb(err)
                 root.state = "stale"
+                cb(err)
                 return
             }
 
-            cb("Saved")
             root.state = "current"
+            cb()
         })
     }
 
@@ -137,7 +145,16 @@ Item {
                 Material.background: Material.color(Material.Grey, Material.Shade300)
                 Material.foreground: Material.color(Material.Grey, Material.Shade900)
                 text: "Cancel"
-                onClicked: dialog.reject()
+                onClicked: {
+                    loadData((err) => {
+                        if (err) {
+                            handler(err);
+                            return;
+                        }
+
+                        dialog.reject()
+                    });
+                }
             }
 
             Button {
@@ -146,16 +163,17 @@ Item {
                 Material.background: Material.Indigo
                 Material.foreground: Material.color(Material.Grey, Material.Shade50)
                 text: "Save"
-                onClicked: dialog.accept()
+                onClicked: {
+                    saveData((err) => {
+                        if (err) {
+                            handler(err);
+                            return;
+                        }
+
+                        dialog.accept()
+                    });
+                }
             }
-        }
-
-        onAccepted: {
-            saveDate(noop)
-        }
-
-        onRejected: {
-            loadData(noop)
         }
     }
 }
