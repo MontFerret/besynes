@@ -99,7 +99,11 @@ func (ctl *Execution) parseQuery(query *core.QJsonObject) (execution.Query, erro
 		}
 	}
 
-	opts := ctl.settings.Get()
+	opts, err := ctl.settings.Get()
+
+	if err != nil {
+		return execution.Query{}, err
+	}
 
 	return execution.Query{
 		Text:       text,

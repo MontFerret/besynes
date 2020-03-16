@@ -1,5 +1,3 @@
-export GOPATH
-export GO111MODULE=on
 export QT_VERSION=5.13.2
 
 CURRENT_OS=$(shell uname -s | awk '{print tolower($0)}')

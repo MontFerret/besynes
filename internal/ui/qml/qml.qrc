@@ -23,5 +23,6 @@
         <file>images/logo.png</file>
         <file>components/settings/GeneralForm.qml</file>
         <file>components/common/forms/TextInput.qml</file>
+        <file>components/common/Alert.qml</file>
     </qresource>
 </RCC>

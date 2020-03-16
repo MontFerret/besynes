@@ -93,7 +93,7 @@ func (bc *BridgeConnector) run(handler Handler, callback *qml.QJSValue) {
 
 			callback.Call([]*qml.QJSValue{
 				qml.NewQJSValue8(""),
-				bc.jsEngine.ToScriptValue(core.NewQVariant1(out)),
+				bc.jsEngine.NewGoType(out),
 			})
 		})
 	}()

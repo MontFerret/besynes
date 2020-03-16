@@ -9,6 +9,8 @@ Item {
         dialog.open()
     }
 
+    signal error(string text)
+
     id: root
     width: 400
     height: 200
@@ -45,22 +47,32 @@ Item {
 
     function noop() {}
 
-    function loadData(cb) {
-        if (typeof settingsApi !== 'undefined') {
-            settingsApi.get((err, values) => {
-                console.log(err, JSON.stringify(values))
-                if (err) {
-                    cb()
-                    return
-                }
-
-                // TODO: Update to JSON case keys
-                settings.cdpAddress = values.settings.cpdAddress
-                cb()
-            })
-        } else {
-            cb()
+    function handler(err) {
+        if (err && root.error) {
+            if (typeof err === "string") {
+                root.error(err);
+            } else {
+                root.error(err.toString());
+            }
         }
+    }
+
+    function loadData(cb) {
+        if (typeof settingsApi === 'undefined') {
+            cb()
+            return;
+        }
+
+        settingsApi.get((err, values) => {
+            if (err) {
+                cb(err)
+                return
+            }
+
+            // TODO: Update to JSON case keys
+            cb(JSON.stringify(values))
+            settings.cdpAddress = values.settings.cpdAddress
+        })
     }
 
     function saveData(cb) {
@@ -76,20 +88,20 @@ Item {
             cdpAddress: settings.cdpAddress
         }, (err) => {
             if (err) {
+                cb(err)
                 root.state = "stale"
-                cb()
                 return
             }
 
+            cb("Saved")
             root.state = "current"
-            cb()
         })
     }
 
     Component.onCompleted: {
         root.state = "current"
 
-        loadData(() => {})
+        loadData(handler)
     }
 
     Common.Dialog {

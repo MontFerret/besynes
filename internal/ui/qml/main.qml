@@ -1,8 +1,10 @@
 import QtQuick 2.13
+import Qt.labs.platform 1.1
 import QtQuick.Controls 2.13
 import QtQuick.Controls.Material 2.13
 import QtQuick.Layouts 1.12
 import Qt.labs.platform 1.1 as Labs
+import "./components/common" as Common
 import "./components/query" as Query
 import "./components/settings" as Settings
 
@@ -17,6 +19,10 @@ ApplicationWindow {
         id: settingsModel
 
         property string cdpAddress: "http://127.0.0.1:9222"
+    }
+
+    Component.onCompleted: {
+        //alert.open({ title: "Test", text: "Test alert", type: "error" })
     }
 
     header: ToolBar {
@@ -81,6 +87,13 @@ ApplicationWindow {
 
     Settings.Dialog {
         id: settingsDialog
+        onError: (err) => {
+            alert.open({ type: 'error', title: "Error", text: err });
+        }
+    }
+
+    Common.Alert {
+        id: alert
     }
 
     Query.TabView {

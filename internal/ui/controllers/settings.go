@@ -25,12 +25,11 @@ func NewSettings(
 }
 
 func (ctl *Settings) Get() (settings.SettingsDetails, error) {
-	return ctl.service.Get(), nil
+	return ctl.service.Get()
 }
 
 func (ctl *Settings) Save(values *core.QJsonObject) (dal.Metadata, error) {
 	if !values.Contains("cdpAddress") {
-
 		return dal.Metadata{}, common.Error(common.ErrMissedArgument, "cdpAddress")
 	}
 
