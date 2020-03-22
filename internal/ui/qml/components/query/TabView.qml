@@ -140,6 +140,7 @@ Control {
             text: `Click "+" icon\nor\n${Qt.platform.os !== 'osx' ? "Ctrl" : "Cmd"}+N to create a new query`
             horizontalAlignment: Text.AlignHCenter
             color: Material.color(Material.Grey, Material.Shade700)
+            font.pixelSize: 16
         }
 
         Shortcut {

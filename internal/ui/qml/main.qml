@@ -7,13 +7,15 @@ import Qt.labs.platform 1.1 as Labs
 import "./components/common" as Common
 import "./components/query" as Query
 import "./components/settings" as Settings
-import "./components/catalog"
+import "./components/catalog" as Catalog
 
 ApplicationWindow {
     id: win
     visible: true
     width: 1024
     height: 768
+    minimumWidth: 512
+    minimumHeight: 384
     title: "Besynes"
 
     header: ToolBar {
@@ -29,7 +31,6 @@ ApplicationWindow {
                 icon.source: "./icons/menu.svg"
                 flat: true
                 onClicked: {
-                    //settingsDialog.open()
                     drawer.open()
                 }
             }
@@ -102,9 +103,9 @@ ApplicationWindow {
         height: parent.height
         visible: false
 
-        Label {
-            text: "Content goes here!"
-            anchors.centerIn: parent
+        Catalog.CatalogView {
+            id: catalog
+            anchors.fill: parent
         }
     }
 

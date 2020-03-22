@@ -28,5 +28,11 @@
         <file>components/catalog/CatalogView.qml</file>
         <file>components/common/SplitHandle.qml</file>
         <file>components/common/Alert.qml</file>
+        <file>components/catalog/CatalogGroup.qml</file>
+        <file>components/catalog/CatalogGroupItem.qml</file>
+        <file>icons/folder.svg</file>
+        <file>icons/folder-outlined.svg</file>
+        <file>icons/arrow_drop_down.svg</file>
+        <file>icons/arrow_right.svg</file>
     </qresource>
 </RCC>
