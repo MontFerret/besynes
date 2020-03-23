@@ -34,5 +34,7 @@
         <file>icons/folder-outlined.svg</file>
         <file>icons/arrow_drop_down.svg</file>
         <file>icons/arrow_right.svg</file>
+        <file>icons/more_horiz.svg</file>
+        <file>icons/more_vert.svg</file>
     </qresource>
 </RCC>

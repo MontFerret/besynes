@@ -55,6 +55,7 @@ Control {
             delegate: listItemDelegate
             snapMode: ListView.SnapToItem
             headerPositioning: ListView.OverlayHeader
+            spacing: 0
             header: Pane {
                 width: parent.width
                 z: 2

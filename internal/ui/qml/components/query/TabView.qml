@@ -99,7 +99,7 @@ Control {
                 }
             }
 
-            TabButton {
+            RoundButton {
                 id: tabBtnAdd
                 Material.foreground: Material.color(Material.Grey, Material.Shade700)
                 Material.accent: Material.color(Material.Grey, Material.Shade700)
@@ -108,6 +108,7 @@ Control {
                 icon.width: 24
                 icon.height: 24
                 width: 50
+                flat: true
                 hoverEnabled: false
                 onClicked: newTab()
             }
@@ -140,6 +141,7 @@ Control {
             text: `Click "+" icon\nor\n${Qt.platform.os !== 'osx' ? "Ctrl" : "Cmd"}+N to create a new query`
             horizontalAlignment: Text.AlignHCenter
             color: Material.color(Material.Grey, Material.Shade700)
+            font.family: "Roboto"
             font.pixelSize: 16
         }
 
