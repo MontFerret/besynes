@@ -25,13 +25,15 @@ Control {
         flat: true
         contentItem: RowLayout {
             Rectangle {
-                Layout.minimumHeight: 24
-                Layout.minimumWidth: 24
-                Layout.preferredHeight: 30
+                Layout.alignment: Qt.AlignLeft
+                Layout.minimumHeight: 50
+                Layout.minimumWidth: 50
+                Layout.preferredHeight: 50
                 Layout.preferredWidth: 50
                 color: "transparent"
 
                 Image {
+                    anchors.centerIn: parent
                     id: iconFolder
                     source: "../../icons/folder.svg"
                     width: 24
@@ -48,10 +50,11 @@ Control {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Text {
-                    color: Material.color(Material.Grey, Material.Shade700)
+                    color: Material.color(Material.Grey, Material.Shade800)
                     font.pixelSize: 14
                     font.family: "Roboto"
                     font.bold: true
+                    antialiasing: true
                     text: root.model.name
                 }
 
@@ -59,6 +62,7 @@ Control {
                     color: Material.color(Material.Grey, Material.Shade700)
                     font.pixelSize: 12
                     font.family: "Roboto"
+                    antialiasing: true
                     text: root.model.queries.count + " queries"
                 }
             }
