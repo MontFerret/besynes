@@ -6,23 +6,19 @@ import QtGraphicalEffects 1.12
 import "../common" as Common
 
 Control {
-    property var model: ({ id: "", name: "", description: "", queries: [] })
+    property var model: ({ id: "", name: "", description: "" })
+    signal selected()
 
     id: root
-    state: "folded"
-    states: [
-        State {
-            name: "folded"
-
-        },
-        State {
-            name: "unfolded"
-        }
-    ]
 
     Button {
         anchors.fill: parent
         flat: true
+        onClicked: {
+            if (root.selected) {
+                root.selected()
+            }
+        }
         contentItem: RowLayout {
             Rectangle {
                 Layout.alignment: Qt.AlignLeft
@@ -46,24 +42,31 @@ Control {
                     color: Material.color(Material.Grey, Material.Shade700)
                 }
             }
-            ColumnLayout {
+
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Text {
-                    color: Material.color(Material.Grey, Material.Shade800)
-                    font.pixelSize: 14
-                    font.family: "Roboto"
-                    font.bold: true
-                    antialiasing: true
-                    text: root.model.name
-                }
+                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                color: "transparent"
 
-                Text {
-                    color: Material.color(Material.Grey, Material.Shade700)
-                    font.pixelSize: 12
-                    font.family: "Roboto"
-                    antialiasing: true
-                    text: root.model.queries.count + " queries"
+                ColumnLayout {
+                    anchors.fill: parent
+                    Text {
+                        color: Material.color(Material.Grey, Material.Shade900)
+                        font.pixelSize: 14
+                        font.family: "Roboto"
+                        font.weight: Font.Bold
+                        antialiasing: true
+                        text: root.model.name
+                    }
+
+                    Text {
+                        color: Material.color(Material.Grey, Material.Shade700)
+                        font.pixelSize: 12
+                        font.family: "Roboto"
+                        antialiasing: true
+                        text: root.model.queries.count + " queries"
+                    }
                 }
             }
 

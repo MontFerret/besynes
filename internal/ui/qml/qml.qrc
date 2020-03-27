@@ -36,5 +36,7 @@
         <file>icons/arrow_right.svg</file>
         <file>icons/more_horiz.svg</file>
         <file>icons/more_vert.svg</file>
+        <file>icons/description-black.svg</file>
+        <file>icons/arrow_back-black.svg</file>
     </qresource>
 </RCC>
