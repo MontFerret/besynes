@@ -38,5 +38,6 @@
         <file>icons/more_vert.svg</file>
         <file>icons/description-black.svg</file>
         <file>icons/arrow_back-black.svg</file>
+        <file>icons/search-black.svg</file>
     </qresource>
 </RCC>

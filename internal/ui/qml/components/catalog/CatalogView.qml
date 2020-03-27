@@ -16,6 +16,21 @@ Control {
         property int groupIndex: -1
     }
 
+    state: "catalog"
+    states: [
+        State {
+            name: "catalog"; when: views.depth === 1
+            PropertyChanges { target: title; text: "Catalog" }
+            PropertyChanges { target: backBtn; x: -50; y: 0 }
+        },
+
+        State {
+            name: "group"; when: views.depth === 2
+            PropertyChanges { target: title; text: collectionModel.get(selection.groupIndex).name }
+            PropertyChanges { target: backBtn; x: 0; y: 0; }
+        }
+    ]
+
     Component.onCompleted: {
         const qd = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer imperdiet libero in massa pulvinar imperdiet.";
         const gd = "Pellentesque tempus molestie eleifend. Integer ex elit, laoreet et diam at, venenatis sagittis dui. Vestibulum tincidunt urna nec lacus molestie, non tincidunt sem gravida.";
@@ -52,13 +67,13 @@ Control {
                     height: 80
                     model: collectionModel.get(index)
                     onSelected: {
+                        selection.groupIndex = index
+
                         const group = collectionModel.get(index);
+
                         views.push(itemsView, {
                             model: group.queries || []
                         })
-
-
-                        title.text = group.name
                     }
                 }
             }
@@ -86,26 +101,22 @@ Control {
         header: ToolBar {
             Material.background: Material.DeepPurple
             leftPadding: 15
-            rightPadding: 65
+            rightPadding: 15
+
+            RoundButton {
+                id: backBtn
+                x: -50
+                icon.source: "../../icons/arrow_back-black.svg"
+                flat: true
+                onClicked: views.pop()
+
+                Behavior on x {
+                    NumberAnimation { properties: "x,y"; easing.type: Easing.InOutQuad; duration: 200; loops: 1 }
+                }
+            }
 
             RowLayout {
                 anchors.fill: parent
-
-                RoundButton {
-                    id: foo
-                    Layout.alignment: Qt.AlignLeft
-                    Layout.minimumWidth: 50
-                    Layout.minimumHeight: 50
-                    Layout.preferredWidth: 50
-                    Layout.preferredHeight: 50
-                    icon.source: "../../icons/arrow_back-black.svg"
-                    flat: true
-                    opacity: views.depth > 1 ? 1 : 0
-                    onClicked: {
-                        views.pop()
-                        title.text = "Catalog"
-                    }
-                }
 
                 Rectangle {
                     Layout.fillWidth: true
@@ -123,6 +134,16 @@ Control {
                         antialiasing: true
                         text: "Catalog"
                     }
+                }
+
+                RoundButton {
+                    Layout.alignment: Qt.AlignRight
+                    Layout.minimumWidth: 50
+                    Layout.minimumHeight: 50
+                    Layout.preferredWidth: 50
+                    Layout.preferredHeight: 50
+                    icon.source: "../../icons/search-black.svg"
+                    flat: true
                 }
             }
         }
