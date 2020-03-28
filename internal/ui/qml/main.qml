@@ -35,33 +35,37 @@ ApplicationWindow {
                 }
             }
 
-//            Rectangle {
-//                Layout.alignment: Qt.AlignCenter
+            Rectangle {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                color: "transparent"
 
-//                Image {
-//                    id: logoImg
-//                    source: "./images/logo.png"
-//                    width: 50
-//                    height: 50
-//                    antialiasing: true
+                Image {
+                    anchors.centerIn: parent
+                    id: logoImg
+                    source: "./images/logo.png"
+                    width: 50
+                    height: 50
+                    antialiasing: true
 
-//                    RotationAnimator {
-//                        id: logoImgAnimation
-//                        target: logoImg;
-//                        from: 0;
-//                        to: 360;
-//                        duration: 500
-//                        running: false
-//                    }
+                    RotationAnimator {
+                        id: logoImgAnimation
+                        target: logoImg;
+                        from: 0;
+                        to: 360;
+                        duration: 500
+                        running: false
+                    }
 
-//                    MouseArea {
-//                        anchors.fill: parent
-//                        onDoubleClicked: {
-//                            logoImgAnimation.running = true
-//                        }
-//                    }
-//                }
-//            }
+                    MouseArea {
+                        anchors.fill: parent
+                        onDoubleClicked: {
+                            logoImgAnimation.running = true
+                        }
+                    }
+                }
+            }
 
             RoundButton {
                 Layout.alignment: Qt.AlignRight
@@ -106,6 +110,10 @@ ApplicationWindow {
         Catalog.CatalogView {
             id: catalog
             anchors.fill: parent
+            onSelected: (id) => {
+                tabView.addQuery(id);
+                drawer.close();
+            }
         }
     }
 

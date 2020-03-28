@@ -39,5 +39,6 @@
         <file>icons/description-black.svg</file>
         <file>icons/arrow_back-black.svg</file>
         <file>icons/search-black.svg</file>
+        <file>components/common/Dropdown.qml</file>
     </qresource>
 </RCC>

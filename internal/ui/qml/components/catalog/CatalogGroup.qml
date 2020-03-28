@@ -70,10 +70,12 @@ Control {
                 }
             }
 
-            RoundButton {
+            Common.Dropdown {
                 Layout.alignment: Qt.AlignRight
-                icon.source: "../../icons/more_vert.svg"
-                flat: true
+                model: [
+                    "Edit",
+                    "Delete"
+                ]
             }
         }
     }

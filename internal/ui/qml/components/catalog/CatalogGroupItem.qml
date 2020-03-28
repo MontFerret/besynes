@@ -7,7 +7,7 @@ import "../common" as Common
 
 Control {
     property var model: ({ id: "", name: "", description: "" })
-    signal selected()
+    signal selected(string id)
 
     id: root
 
@@ -16,7 +16,7 @@ Control {
         flat: true
         onClicked: {
             if (root.selected) {
-                root.selected()
+                root.selected(root.model.id)
             }
         }
         contentItem: RowLayout {
@@ -70,10 +70,12 @@ Control {
                 }
             }
 
-            RoundButton {
+            Common.Dropdown {
                 Layout.alignment: Qt.AlignRight
-                icon.source: "../../icons/more_vert.svg"
-                flat: true
+                model: [
+                    "Edit",
+                    "Delete"
+                ]
             }
         }
     }

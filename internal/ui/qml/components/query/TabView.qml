@@ -15,16 +15,27 @@ Control {
         property int counter: 0
     }
 
-    function newTab() {
-        state.counter += 1
-        const uid = `query_${state.counter}`
-        const name = `UNTITLED QUERY ${state.counter}`
+    function addQuery(id) {
+        if (typeof catalogApi === "undefined") {
+            newTab()
+            return
+        }
 
-        tabListModel.append({
-            uid: uid,
-            name: name,
-            text: "",
-        })
+        catalogApi.getQuery(id, (err, query) => {
+            if (err) {
+                console.error(err);
+                newTab();
+                return;
+            }
+
+            addTab(query);
+        });
+    }
+
+    function addTab(query) {
+        state.counter += 1
+
+        tabListModel.append(query)
 
         // forcing to re-render the Layout
         // otherwise it fails to scale first rendered item
@@ -32,6 +43,13 @@ Control {
         queryContentList.width--
 
         queryTabBar.setCurrentIndex(tabListModel.count - 1)
+    }
+
+    function newTab() {
+        const uid = `query_${state.counter}`
+        const name = `UNTITLED QUERY ${state.counter + 1}`
+
+        addTab({ uid, name });
     }
 
     function closeTab(target_uid) {

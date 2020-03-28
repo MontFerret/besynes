@@ -5,6 +5,9 @@ import QtQuick.Controls.Material 2.13
 import "../common" as Common
 
 Control {
+    signal selected(string id)
+
+
     id: root
 
     ListModel {
@@ -91,6 +94,7 @@ Control {
                     width: parent.width
                     height: 80
                     model: itemsViewInstance.model.get(index)
+                    onSelected: (i) => root.selected(i)
                 }
             }
         }
