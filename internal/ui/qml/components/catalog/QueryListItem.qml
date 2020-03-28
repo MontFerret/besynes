@@ -7,7 +7,9 @@ import "../common" as Common
 
 Control {
     property var model: ({ id: "", name: "", description: "" })
-    signal selected()
+    signal selected(string id)
+    signal edited(string id)
+    signal deleted(string id)
 
     id: root
 
@@ -16,7 +18,7 @@ Control {
         flat: true
         onClicked: {
             if (root.selected) {
-                root.selected()
+                root.selected(root.model.id)
             }
         }
         contentItem: RowLayout {
@@ -31,7 +33,7 @@ Control {
                 Image {
                     anchors.centerIn: parent
                     id: iconFolder
-                    source: "../../icons/folder.svg"
+                    source: "../../icons/description-black.svg"
                     width: 24
                     height: 24
                 }
@@ -60,13 +62,13 @@ Control {
                         text: root.model.name
                     }
 
-                    Text {
-                        color: Material.color(Material.Grey, Material.Shade700)
-                        font.pixelSize: 12
-                        font.family: "Roboto"
-                        antialiasing: true
-                        text: root.model.queries.count + " queries"
-                    }
+//                    Text {
+//                        color: Material.color(Material.Grey, Material.Shade700)
+//                        font.pixelSize: 12
+//                        font.family: "Roboto"
+//                        antialiasing: true
+//                        text: root.model.description
+//                    }
                 }
             }
 
@@ -76,6 +78,18 @@ Control {
                     "Edit",
                     "Delete"
                 ]
+                onSelected: (option) => {
+                    const opt = option.toLowerCase();
+                    if (opt === "edit") {
+                        if (root.edited) {
+                            root.edited(root.model.id)
+                        }
+                    } else if (opt === "Delete") {
+                        if (root.deleted) {
+                            root.deleted(root.model.id)
+                        }
+                    }
+                }
             }
         }
     }

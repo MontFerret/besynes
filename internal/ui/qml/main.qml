@@ -107,11 +107,11 @@ ApplicationWindow {
         height: parent.height
         visible: false
 
-        Catalog.CatalogView {
+        Catalog.View {
             id: catalog
             anchors.fill: parent
-            onSelected: (id) => {
-                tabView.addQuery(id);
+            onSelected: (groupId, queryId) => {
+                tabView.addQuery(groupId, queryId);
                 drawer.close();
             }
         }

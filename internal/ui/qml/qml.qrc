@@ -25,11 +25,11 @@
         <file>images/logo.png</file>
         <file>components/settings/GeneralForm.qml</file>
         <file>components/common/forms/TextInput.qml</file>
-        <file>components/catalog/CatalogView.qml</file>
+        <file>components/catalog/View.qml</file>
         <file>components/common/SplitHandle.qml</file>
         <file>components/common/Alert.qml</file>
-        <file>components/catalog/CatalogGroup.qml</file>
-        <file>components/catalog/CatalogGroupItem.qml</file>
+        <file>components/catalog/GroupListItem.qml</file>
+        <file>components/catalog/QueryListItem.qml</file>
         <file>icons/folder.svg</file>
         <file>icons/folder-outlined.svg</file>
         <file>icons/arrow_drop_down.svg</file>
@@ -40,5 +40,7 @@
         <file>icons/arrow_back-black.svg</file>
         <file>icons/search-black.svg</file>
         <file>components/common/Dropdown.qml</file>
+        <file>components/catalog/GroupList.qml</file>
+        <file>components/catalog/QueryList.qml</file>
     </qresource>
 </RCC>

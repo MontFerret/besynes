@@ -10,6 +10,7 @@ RoundButton {
     onClicked: menu.open()
 
     property var model: []
+    signal selected(string option)
 
     Menu {
         id: menu
@@ -21,6 +22,11 @@ RoundButton {
 
             MenuItem {
                 text: modelData
+                onClicked: {
+                    if (root.selected) {
+                        root.selected(modelData)
+                    }
+                }
             }
         }
     }

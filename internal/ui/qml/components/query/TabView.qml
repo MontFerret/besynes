@@ -15,13 +15,13 @@ Control {
         property int counter: 0
     }
 
-    function addQuery(id) {
+    function addQuery(groupId, queryId) {
         if (typeof catalogApi === "undefined") {
             newTab()
             return
         }
 
-        catalogApi.getQuery(id, (err, query) => {
+        catalogApi.getQuery(queryId, (err, query) => {
             if (err) {
                 console.error(err);
                 newTab();

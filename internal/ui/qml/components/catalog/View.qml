@@ -5,18 +5,12 @@ import QtQuick.Controls.Material 2.13
 import "../common" as Common
 
 Control {
-    signal selected(string id)
-
+    signal selected(string roupdId, string queryId)
 
     id: root
 
     ListModel {
         id: collectionModel
-    }
-
-    QtObject {
-        id: selection
-        property int groupIndex: -1
     }
 
     state: "catalog"
@@ -29,7 +23,7 @@ Control {
 
         State {
             name: "group"; when: views.depth === 2
-            PropertyChanges { target: title; text: collectionModel.get(selection.groupIndex).name }
+            PropertyChanges { target: title; text: views.currentItem.model.name || "Catalog" }
             PropertyChanges { target: backBtn; x: 0; y: 0; }
         }
     ]
@@ -61,24 +55,12 @@ Control {
     Component {
         id: groupsView
 
-        ListView {
-            spacing: 0
+        GroupList {
             model: collectionModel
-            delegate: Component {
-                CatalogGroup {
-                    width: parent.width
-                    height: 80
-                    model: collectionModel.get(index)
-                    onSelected: {
-                        selection.groupIndex = index
-
-                        const group = collectionModel.get(index);
-
-                        views.push(itemsView, {
-                            model: group.queries || []
-                        })
-                    }
-                }
+            onSelected: (group) => {
+                views.push(itemsView, {
+                    model: group
+                })
             }
         }
     }
@@ -86,15 +68,11 @@ Control {
     Component {
         id: itemsView
 
-        ListView {
+        QueryList {
             id: itemsViewInstance
-            spacing: 0
-            delegate: Component {
-                CatalogGroupItem {
-                    width: parent.width
-                    height: 80
-                    model: itemsViewInstance.model.get(index)
-                    onSelected: (i) => root.selected(i)
+            onSelected: (groupdId, queryId) => {
+                if (root.selected) {
+                    root.selected(groupdId, queryId)
                 }
             }
         }
